@@ -31,3 +31,16 @@ export const authRateLimit = rateLimit({
     message: "Too many attempts. Please try again in a few minutes.",
   },
 });
+
+// Stricter guard for contact forms, inquiries, and comments to prevent spam.
+export const contactRateLimit = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  limit: 5, // Allow 5 submissions per hour per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  store: redisStore("rl:contact:"),
+  message: {
+    success: false,
+    message: "You have submitted too many requests. Please wait an hour before trying again.",
+  },
+});

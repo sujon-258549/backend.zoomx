@@ -9,6 +9,7 @@ const ContactMessageSchema = new Schema<IContactMessage>(
     phone: { type: String, required: true },
     subject: { type: String, required: true },
     message: { type: String, required: true },
+    type: { type: String, default: "General" },
   },
   {
     timestamps: true,

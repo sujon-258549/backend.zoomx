@@ -111,7 +111,7 @@ const getAllBlogs = async (params: any, options: IPaginationOptions) => {
     .populate({ path: "coverImageId", select: "key" })
     .populate({ path: "categoryIds", select: "name slug" })
     // Explicitly exclude legacy fields still present on old documents.
-    .select("-_id -content -seo -tags")
+    .select("-content -seo -tags")
     .lean();
 
   // Shape populated media refs down to `{_id, url}` only — no key, name, id,

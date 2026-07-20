@@ -1,6 +1,7 @@
 import { Router } from "express";
 import auth from "../../middleware/auth";
 import checkPermission from "../../middleware/permission";
+import { contactRateLimit } from "../../middleware/rateLimit";
 import validateRequest from "../../middleware/validateRequest";
 import { inquiriesController } from "./inquiries.controller";
 import { inquiriesValidation } from "./inquiries.validation";
@@ -10,6 +11,7 @@ const router = Router();
 // Public submissions
 router.post(
   "/contact",
+  contactRateLimit,
   validateRequest(inquiriesValidation.createContactMessage),
   inquiriesController.createContactMessage
 );

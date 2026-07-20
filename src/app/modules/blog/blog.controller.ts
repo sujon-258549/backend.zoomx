@@ -5,12 +5,14 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { blogFilterableFields } from "./blog.constant";
 import { BlogServices } from "./blog.service";
+import { revalidateFrontend } from "../../utils/revalidateFrontend";
 
 const createBlog = catchAsync(async (req: Request, res: Response) => {
   const result = await BlogServices.createBlog({
     ...req.body,
     author: req.user.userId,
   });
+  revalidateFrontend(result?.slug);
   sendResponse(res, {
     statusCode: StatusCodes.CREATED,
     success: true,
@@ -50,6 +52,7 @@ const updateBlog = catchAsync(async (req: Request, res: Response) => {
     req.body,
     lastUpdatedBy
   );
+  revalidateFrontend(result?.slug);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
@@ -60,6 +63,7 @@ const updateBlog = catchAsync(async (req: Request, res: Response) => {
 
 const deleteBlog = catchAsync(async (req: Request, res: Response) => {
   const result = await BlogServices.deleteBlog(req.params.slug);
+  revalidateFrontend(result?.slug);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
@@ -71,6 +75,7 @@ const deleteBlog = catchAsync(async (req: Request, res: Response) => {
 const updateStatus = catchAsync(async (req: Request, res: Response) => {
   const { status } = req.body;
   const result = await BlogServices.updateStatus(req.params.slug, status);
+  revalidateFrontend(result?.slug);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,

@@ -4,6 +4,7 @@ export interface IContactMessage {
   phone: string;
   subject: string;
   message: string;
+  type?: string;
 }
 
 export interface IQuotationRequest {

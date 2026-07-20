@@ -25,6 +25,17 @@ const getAllComments = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getPublicCommentsForBlog = catchAsync(async (req: Request, res: Response) => {
+  const { blogId } = req.params;
+  const result = await CommentServices.getPublicCommentsForBlog(blogId);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Public comments retrieved successfully",
+    data: result,
+  });
+});
+
 const updateStatus = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const { status } = req.body;
@@ -51,6 +62,7 @@ const deleteComment = catchAsync(async (req: Request, res: Response) => {
 export const CommentControllers = {
   createComment,
   getAllComments,
+  getPublicCommentsForBlog,
   updateStatus,
   deleteComment,
 };
