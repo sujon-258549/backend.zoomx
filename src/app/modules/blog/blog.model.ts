@@ -13,6 +13,17 @@ const blogSchema = new mongoose.Schema(
     thumbnail: {
       type: String,
     },
+    thumbnailId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Media",
+    },
+    coverImage: {
+      type: String,
+    },
+    coverImageId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Media",
+    },
     sort_description: {
       type: String,
     },
@@ -32,13 +43,29 @@ const blogSchema = new mongoose.Schema(
     category: {
       type: String,
     },
-    tags: {
-      type: [String],
+    // Multi-category support. Refers to the Category collection (which serves
+    // as blog categories in this project). Populate: 'categoryIds'.
+    categoryIds: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Category",
       default: [],
+      index: true,
     },
     status: {
       type: Boolean,
       default: false,
+    },
+    // Editorial pick — admin controls via a toggle. Powers "Featured Posts".
+    isFeatured: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    // Auto-incremented on each detail page view. Powers "Top Rated Posts".
+    viewCount: {
+      type: Number,
+      default: 0,
+      index: true,
     },
 
     is_deleted: {
@@ -54,11 +81,6 @@ const blogSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       default: null,
-    },
-    seo: {
-      meta_title: { type: String, default: "" },
-      meta_description: { type: String, default: "" },
-      meta_keywords: { type: String, default: "" },
     },
   },
   {

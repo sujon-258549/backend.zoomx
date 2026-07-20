@@ -7,13 +7,19 @@ import { BlogValidation } from "./blog.validation";
 
 const router = express.Router();
 
-// Public reads (used by the public site too)
+// Public reads (used by the public site too). Featured / top-rated are placed
+// BEFORE `/:slug` so their literal paths aren't captured as slugs.
 router.get("/", BlogControllers.getAllBlogs);
+router.get("/featured", BlogControllers.getFeaturedBlogs);
+router.get("/top-rated", BlogControllers.getTopRatedBlogs);
 router.get("/categories", BlogControllers.getCategoryList);
 router.get("/categories/:category", BlogControllers.getBlogsByCategory);
 router.get("/authors", BlogControllers.getAllAuthors);
 router.get("/author/:username", BlogControllers.getBlogsByAuthor);
 router.get("/:slug", BlogControllers.getSingleBlog);
+
+// Fire-and-forget view counter — public, no auth. Placed near reads.
+router.patch("/:slug/view", BlogControllers.incrementViewCount);
 
 // Admin writes — permission-gated
 router.post(

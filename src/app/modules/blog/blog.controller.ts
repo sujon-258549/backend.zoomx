@@ -125,6 +125,38 @@ const getAllAuthors = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getFeaturedBlogs = catchAsync(async (req: Request, res: Response) => {
+  const limit = Number(req.query.limit) || 3;
+  const result = await BlogServices.getFeaturedBlogs(limit);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Featured blogs fetched successfully",
+    data: result,
+  });
+});
+
+const getTopRatedBlogs = catchAsync(async (req: Request, res: Response) => {
+  const limit = Number(req.query.limit) || 5;
+  const result = await BlogServices.getTopRatedBlogs(limit);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Top rated blogs fetched successfully",
+    data: result,
+  });
+});
+
+const incrementViewCount = catchAsync(async (req: Request, res: Response) => {
+  const viewCount = await BlogServices.incrementViewCount(req.params.slug);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "View recorded",
+    data: { viewCount },
+  });
+});
+
 export const BlogControllers = {
   createBlog,
   getAllBlogs,
@@ -136,4 +168,7 @@ export const BlogControllers = {
   getBlogsByCategory,
   getBlogsByAuthor,
   getAllAuthors,
-};    
+  getFeaturedBlogs,
+  getTopRatedBlogs,
+  incrementViewCount,
+};

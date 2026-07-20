@@ -3,6 +3,7 @@ import AppError from "../../errors/appError";
 import { paginationHelper } from "../../helpers/paginationHelper";
 import { IPaginationOptions } from "../../interface/pagination";
 import { withCache } from "../../shared/redis";
+import { r2PublicUrl } from "../../utils/r2";
 import { generateSlug } from "../../utils/slug";
 import User from "../user/user.model";
 import {
@@ -93,7 +94,7 @@ const getAllBlogs = async (params: any, options: IPaginationOptions) => {
     is_deleted: { $ne: true },
   };
 // console.log("getAllBlogs with conditions:", whereConditions, { page, limit, sortBy, sortOrder });
-  const data = await Blog.find(whereConditions)
+  const rawData = await Blog.find(whereConditions)
     .sort({ [sortBy]: sortOrder === "asc" ? 1 : -1 })
     .allowDiskUse(true)
     .skip(skip)
@@ -106,7 +107,24 @@ const getAllBlogs = async (params: any, options: IPaginationOptions) => {
       path: "last_update_by",
       select: "name email profilePhoto -_id",
     })
-    .select("-_id -content -seo");
+    .populate({ path: "thumbnailId", select: "key" })
+    .populate({ path: "coverImageId", select: "key" })
+    .populate({ path: "categoryIds", select: "name slug" })
+    // Explicitly exclude legacy fields still present on old documents.
+    .select("-_id -content -seo -tags")
+    .lean();
+
+  // Shape populated media refs down to `{_id, url}` only — no key, name, id,
+  // updatedAt etc. Done after .lean() so the map isn't fighting Mongoose docs.
+  const data = rawData.map((blog: any) => ({
+    ...blog,
+    thumbnailId: blog.thumbnailId?.key
+      ? { _id: blog.thumbnailId._id, url: r2PublicUrl(blog.thumbnailId.key) }
+      : blog.thumbnailId ?? null,
+    coverImageId: blog.coverImageId?.key
+      ? { _id: blog.coverImageId._id, url: r2PublicUrl(blog.coverImageId.key) }
+      : blog.coverImageId ?? null,
+  }));
 
   const total = await Blog.countDocuments(whereConditions);
 
@@ -127,10 +145,30 @@ const getSingleBlog = async (slug: string): Promise<IBlog> => {
   const cached = await withCache<IBlog | null>(
     { key: BLOG_KEYS.single(slug), ttl: BLOG_CACHE.SINGLE_TTL },
     async () => {
-      const blog = await Blog.findOne({ slug: slug, is_deleted: false })
+      const raw: any = await Blog.findOne({ slug: slug, is_deleted: false })
         .populate({ path: "author", select: "name email username -_id" })
-        .populate({ path: "last_update_by", select: "name email -_id" });
-      return blog;
+        .populate({ path: "last_update_by", select: "name email -_id" })
+        .populate({ path: "thumbnailId", select: "key" })
+        .populate({ path: "coverImageId", select: "key" })
+        .populate({ path: "categoryIds", select: "name slug" })
+        // Exclude legacy fields still present on old docs.
+        .select("-seo -tags")
+        .lean();
+      if (!raw) return null;
+      // Shape populated media refs down to `{_id, url}` only.
+      if (raw.thumbnailId?.key) {
+        raw.thumbnailId = {
+          _id: raw.thumbnailId._id,
+          url: r2PublicUrl(raw.thumbnailId.key),
+        };
+      }
+      if (raw.coverImageId?.key) {
+        raw.coverImageId = {
+          _id: raw.coverImageId._id,
+          url: r2PublicUrl(raw.coverImageId.key),
+        };
+      }
+      return raw as IBlog;
     }
   );
   if (!cached) throw new AppError(StatusCodes.NOT_FOUND, "Blog not found.");
@@ -533,6 +571,71 @@ const getAllAuthors = async (): Promise<
   );
 };
 
+// -------- Featured / Top Rated / View Counter --------
+// These three power the marketing blog page. Kept as small, focused reads with
+// their own cache tags so the frontend can revalidate them independently of
+// the main list.
+
+const shapeMediaRefs = (blog: any) => {
+  if (blog?.thumbnailId?.key) {
+    blog.thumbnailId = {
+      _id: blog.thumbnailId._id,
+      url: r2PublicUrl(blog.thumbnailId.key),
+    };
+  }
+  if (blog?.coverImageId?.key) {
+    blog.coverImageId = {
+      _id: blog.coverImageId._id,
+      url: r2PublicUrl(blog.coverImageId.key),
+    };
+  }
+  return blog;
+};
+
+const getFeaturedBlogs = async (limit = 3): Promise<IBlog[]> => {
+  const raw: any[] = await Blog.find({
+    isFeatured: true,
+    status: true,
+    is_deleted: { $ne: true },
+  })
+    .sort({ createdAt: -1 })
+    .limit(Math.min(Math.max(limit, 1), 20))
+    .populate({ path: "author", select: "name email username -_id" })
+    .populate({ path: "thumbnailId", select: "key" })
+    .populate({ path: "coverImageId", select: "key" })
+    .populate({ path: "categoryIds", select: "name slug" })
+    .select("-content -seo -tags")
+    .lean();
+  return raw.map(shapeMediaRefs) as IBlog[];
+};
+
+const getTopRatedBlogs = async (limit = 5): Promise<IBlog[]> => {
+  const raw: any[] = await Blog.find({
+    status: true,
+    is_deleted: { $ne: true },
+  })
+    .sort({ viewCount: -1, createdAt: -1 })
+    .limit(Math.min(Math.max(limit, 1), 20))
+    .populate({ path: "author", select: "name email username -_id" })
+    .populate({ path: "thumbnailId", select: "key" })
+    .populate({ path: "coverImageId", select: "key" })
+    .populate({ path: "categoryIds", select: "name slug" })
+    .select("-content -seo -tags")
+    .lean();
+  return raw.map(shapeMediaRefs) as IBlog[];
+};
+
+/** Fire-and-forget from the frontend on detail-page load. Returns the new count. */
+const incrementViewCount = async (slug: string): Promise<number> => {
+  const blog = await Blog.findOneAndUpdate(
+    { slug, is_deleted: false },
+    { $inc: { viewCount: 1 } },
+    { new: true, projection: { viewCount: 1 } },
+  ).lean();
+  if (!blog) throw new AppError(StatusCodes.NOT_FOUND, "Blog not found.");
+  return (blog as any).viewCount ?? 0;
+};
+
 export const BlogServices = {
   createBlog,
   getAllBlogs,
@@ -544,4 +647,7 @@ export const BlogServices = {
   getBlogsByCategory,
   getBlogsByAuthor,
   getAllAuthors,
+  getFeaturedBlogs,
+  getTopRatedBlogs,
+  incrementViewCount,
 };
