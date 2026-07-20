@@ -59,10 +59,34 @@ const deleteComment = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const bulkUpdateStatus = catchAsync(async (req: Request, res: Response) => {
+  const { ids, status } = req.body;
+  const result = await CommentServices.bulkUpdateStatus(ids, status);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Comments status updated successfully",
+    data: result,
+  });
+});
+
+const bulkDeleteComments = catchAsync(async (req: Request, res: Response) => {
+  const { ids } = req.body;
+  const result = await CommentServices.bulkDeleteComments(ids);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Comments deleted successfully",
+    data: result,
+  });
+});
+
 export const CommentControllers = {
   createComment,
   getAllComments,
   getPublicCommentsForBlog,
   updateStatus,
   deleteComment,
+  bulkUpdateStatus,
+  bulkDeleteComments,
 };

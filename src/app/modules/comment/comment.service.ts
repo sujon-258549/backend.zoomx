@@ -49,10 +49,31 @@ const deleteComment = async (id: string) => {
   return result;
 };
 
+const bulkUpdateStatus = async (ids: string[], status: string) => {
+  const result = await Comment.updateMany(
+    { _id: { $in: ids } },
+    { status }
+  );
+  if (result.modifiedCount > 0) {
+    await revalidateFrontend();
+  }
+  return result;
+};
+
+const bulkDeleteComments = async (ids: string[]) => {
+  const result = await Comment.deleteMany({ _id: { $in: ids } });
+  if (result.deletedCount > 0) {
+    await revalidateFrontend();
+  }
+  return result;
+};
+
 export const CommentServices = {
   createComment,
   getAllComments,
   getPublicCommentsForBlog,
   updateStatus,
   deleteComment,
+  bulkUpdateStatus,
+  bulkDeleteComments,
 };

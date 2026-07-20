@@ -42,4 +42,18 @@ router.delete(
   CommentControllers.deleteComment
 );
 
+router.post(
+  "/bulk-delete",
+  auth(),
+  checkPermission("Blog Comments", "delete"),
+  CommentControllers.bulkDeleteComments
+);
+
+router.post(
+  "/bulk-status",
+  auth(),
+  checkPermission("Blog Comments", "update"),
+  CommentControllers.bulkUpdateStatus
+);
+
 export const CommentRoutes = router;
