@@ -3,6 +3,7 @@ import auth from "../../middleware/auth";
 import checkPermission from "../../middleware/permission";
 import clientInfoParser from "../../middleware/clientInfoParser";
 import { authRateLimit } from "../../middleware/rateLimit";
+import { profileImageUpload } from "../../middleware/upload";
 import validateRequest from "../../middleware/validateRequest";
 import { UserController } from "./user.controller";
 import { UserValidation } from "./user.validation";
@@ -19,6 +20,18 @@ router.get(
 
 // Logged-in user's own profile — any authenticated user
 router.get("/me", auth(), UserController.myProfile);
+
+// Profile image: authenticated users upload their own to /uploads/profile-image/
+// Auth must run BEFORE multer — multer's filename generator reads req.user.
+router.post(
+  "/profile-image",
+  auth(),
+  profileImageUpload.single("image"),
+  UserController.uploadProfileImage
+);
+
+// List profile images — SUPER_ADMIN / ADMIN see everyone's, others see only theirs.
+router.get("/profile-images", auth(), UserController.getAllProfileImages);
 
 // Public registration — no auth
 router.post(

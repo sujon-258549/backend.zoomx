@@ -253,6 +253,36 @@ const changePassword = async (userId: string, newPassword: string) => {
   return { message: "Password changed successfully" };
 };
 
+// -------- Profile images --------
+// SUPER_ADMIN + ADMIN can list every user's profile image. Everyone else only
+// sees their own — same row-level access pattern as ActionLogs.
+const AUDIT_PRIVILEGED_ROLES = new Set([UserRole.SUPER_ADMIN, UserRole.ADMIN]);
+
+const uploadProfileImage = async (authUser: IJwtPayload, url: string) => {
+  const updated = await User.findByIdAndUpdate(
+    authUser.userId,
+    { profilePhoto: url },
+    { new: true }
+  ).select("_id name email profilePhoto role");
+  if (!updated) {
+    throw new AppError(StatusCodes.NOT_FOUND, "User not found");
+  }
+  return updated;
+};
+
+const getAllProfileImages = async (authUser: IJwtPayload) => {
+  const isPrivileged = AUDIT_PRIVILEGED_ROLES.has(authUser.role as UserRole);
+  const scope = isPrivileged
+    ? { isDeleted: { $ne: true } }
+    : { _id: authUser.userId, isDeleted: { $ne: true } };
+
+  const users = await User.find(scope)
+    .select("_id name email profilePhoto role")
+    .sort({ updatedAt: -1 });
+
+  return users;
+};
+
 export const UserServices = {
   registerUser,
   getAllUser,
@@ -261,4 +291,6 @@ export const UserServices = {
   updateUser,
   deleteUser,
   changePassword,
+  uploadProfileImage,
+  getAllProfileImages,
 };

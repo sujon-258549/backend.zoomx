@@ -102,6 +102,37 @@ const changePassword = catchAsync(async (req, res) => {
   });
 });
 
+const uploadProfileImage = catchAsync(async (req: Request, res: Response) => {
+  if (!req.file) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "No image uploaded");
+  }
+  const url = `${req.protocol}://${req.get(
+    "host"
+  )}/uploads/profile-image/${req.file.filename}`;
+  const updated = await UserServices.uploadProfileImage(
+    req.user as IJwtPayload,
+    url
+  );
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Profile image uploaded successfully",
+    data: { url, user: updated },
+  });
+});
+
+const getAllProfileImages = catchAsync(async (req, res) => {
+  const data = await UserServices.getAllProfileImages(req.user as IJwtPayload);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Profile images retrieved successfully",
+    data,
+  });
+});
+
 export const UserController = {
   registerUser,
   getAllUser,
@@ -110,4 +141,6 @@ export const UserController = {
   updateUser,
   deleteUser,
   changePassword,
+  uploadProfileImage,
+  getAllProfileImages,
 };

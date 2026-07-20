@@ -8,7 +8,11 @@ import { ActionLogServices } from "./actionLog.service";
 const getAllActionLogs = catchAsync(async (req, res) => {
   const filters = pick(req.query, actionLogFilterableFields);
   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-  const result = await ActionLogServices.getAllActionLogs(filters, options);
+  const result = await ActionLogServices.getAllActionLogs(
+    filters,
+    options,
+    req.user,
+  );
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,

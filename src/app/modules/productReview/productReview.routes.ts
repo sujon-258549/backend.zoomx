@@ -1,5 +1,4 @@
 import express from "express";
-import { actionLogger } from "../../middleware/actionLogger";
 import auth from "../../middleware/auth";
 import checkPermission from "../../middleware/permission";
 import validateRequest from "../../middleware/validateRequest";
@@ -31,7 +30,6 @@ router.patch(
   "/status/:id",
   auth(),
   checkPermission("Product Reviews", "update"),
-  actionLogger,
   validateRequest(ProductReviewValidation.updateStatus),
   ProductReviewControllers.updateStatus
 );
@@ -40,7 +38,6 @@ router.put(
   "/:id",
   auth(),
   checkPermission("Product Reviews", "update"),
-  actionLogger,
   validateRequest(ProductReviewValidation.update),
   ProductReviewControllers.updateReview
 );
@@ -49,7 +46,6 @@ router.delete(
   "/:id",
   auth(),
   checkPermission("Product Reviews", "delete"),
-  actionLogger,
   ProductReviewControllers.deleteReview
 );
 

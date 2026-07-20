@@ -5,6 +5,7 @@ import { StatusCodes } from "http-status-codes";
 import morgan from "morgan";
 import os from "os";
 import path from "path";
+import { actionLogger } from "./app/middleware/actionLogger";
 import globalErrorHandler from "./app/middleware/globalErrorHandler";
 import notFound from "./app/middleware/notFound";
 import { apiRateLimit } from "./app/middleware/rateLimit";
@@ -58,7 +59,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 // Static folder for image access
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 app.use("", UploadRoutes);
-app.use("/api", apiRateLimit, router);
+app.use("/api", apiRateLimit, actionLogger, router);
 
 // seedAdmin();
 

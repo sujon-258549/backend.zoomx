@@ -1,5 +1,4 @@
 import express from "express";
-import { actionLogger } from "../../middleware/actionLogger";
 import auth from "../../middleware/auth";
 import checkPermission from "../../middleware/permission";
 import validateRequest from "../../middleware/validateRequest";
@@ -25,7 +24,6 @@ router.patch(
   "/status/:id",
   auth(),
   checkPermission("Blog Comments", "update"),
-  actionLogger,
   validateRequest(CommentValidation.updateStatus),
   CommentControllers.updateStatus
 );
@@ -34,7 +32,6 @@ router.delete(
   "/:id",
   auth(),
   checkPermission("Blog Comments", "delete"),
-  actionLogger,
   CommentControllers.deleteComment
 );
 

@@ -1,5 +1,4 @@
 import express from "express";
-import { actionLogger } from "../../middleware/actionLogger";
 import auth from "../../middleware/auth";
 import checkPermission from "../../middleware/permission";
 import validateRequest from "../../middleware/validateRequest";
@@ -21,7 +20,6 @@ router.post(
   "/create",
   auth(),
   checkPermission("Blog Posts", "create"),
-  actionLogger,
   validateRequest(BlogValidation.create),
   BlogControllers.createBlog
 );
@@ -37,7 +35,6 @@ router.patch(
   "/:slug",
   auth(),
   checkPermission("Blog Posts", "update"),
-  actionLogger,
   validateRequest(BlogValidation.update),
   BlogControllers.updateBlog
 );
@@ -46,7 +43,6 @@ router.delete(
   "/:slug",
   auth(),
   checkPermission("Blog Posts", "delete"),
-  actionLogger,
   BlogControllers.deleteBlog
 );
 
