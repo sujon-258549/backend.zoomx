@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8" />
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <title>New Contact Message - ZOOM IT</title>
+   <style>
+      body {
+         font-family: Arial, sans-serif;
+         margin: 0;
+         padding: 0;
+         background-color: #f4f4f4;
+      }
+
+      .container {
+         margin: 20px auto;
+         padding: 20px;
+         background-color: #ffffff;
+         border-radius: 8px;
+         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .content {
+         padding: 20px;
+      }
+
+      .message-content {
+         color: #555;
+         line-height: 1.6;
+         white-space: pre-wrap;
+         font-size: 14px;
+         margin: 15px 0;
+      }
+
+      .timestamp {
+         margin-top: 30px;
+         padding-top: 20px;
+         border-top: 1px solid #e0e0e0;
+      }
+
+      .timestamp p {
+         margin: 2px 0;
+         line-height: 1.2;
+         color: #333;
+         font-size: 14px;
+      }
+
+      .timestamp p:first-child {
+         margin-top: 0;
+      }
+
+      .timestamp p:last-of-type {
+         margin-bottom: 10px;
+      }
+
+      .timestamp {
+         color: #999;
+         font-size: 12px;
+         margin-top: 10px;
+         font-style: italic;
+      }
+
+      .footer {
+         margin-top: 30px;
+         padding-top: 20px;
+         border-top: 1px solid #e0e0e0;
+         font-size: 12px;
+         color: #666;
+         text-align: center;
+      }
+
+      .footer a {
+         color: #007bff;
+         text-decoration: none;
+      }
+
+      .footer a:hover {
+         text-decoration: underline;
+      }
+   </style>
+</head>
+
+<body>
+   <div class="container">
+      <div class="content">
+         <p>Dear ZOOM IT,</p>
+         <p class="message-content">{{message}}</p>
+
+         <div class="timestamp">
+            <p>Best regards,</p>
+            <p>{{name}}</p>
+            <p>{{email}}</p>
+            <p>{{phone}}</p>
+            <p>Received at: {{timestamp}}</p>
+         </div>
+      </div>
+      <div class="footer">
+         <p>This is an automated notification from ZOOM IT website.</p>
+         <p>Please respond to the customer at: <a href="mailto:{{email}}">{{email}}</a></p>
+      </div>
+   </div>
+</body>
+
+</html>

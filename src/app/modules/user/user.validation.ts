@@ -1,0 +1,94 @@
+import { z } from "zod";
+import { UserRole } from "./user.interface";
+
+const clientInfoSchema = z.object({
+  device: z.string().optional().default("pc"),
+  browser: z.string().min(1, "Browser name is required"),
+  ipAddress: z.string().min(1, "IP address is required"),
+  pcName: z.string().optional(), // Optional field
+  os: z.string().optional(), // Optional field
+  userAgent: z.string().min(1, "User agent is required"),
+});
+
+const userValidationSchema = z.object({
+  body: z.object({
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters long"),
+    name: z.string().min(1, "Name is required"),
+    role: z
+      .enum([
+        UserRole.SUPER_ADMIN,
+        UserRole.ADMIN,
+        UserRole.EDITOR,
+        UserRole.PUBLISHER,
+      ])
+      .default(UserRole.SUPER_ADMIN)
+      .optional(), // Match enum values in your code
+    roleId: z
+      .string()
+      .regex(/^[0-9a-fA-F]{24}$/, "Invalid role ID format")
+      .optional(),
+    designationId: z
+      .string()
+      .regex(/^[0-9a-fA-F]{24}$/, "Invalid designation ID format")
+      .optional(),
+    clientInfo: clientInfoSchema, // Nested schema for client info
+  }),
+});
+
+const customerInfoValidationSchema = z.object({
+  body: z
+    .object({
+      phoneNo: z
+        .string()
+        .regex(/^\d{11}$/, "Phone number must be exactly 11 digits long")
+        .optional(),
+      gender: z.enum(["Male", "Female", "Other"]).default("Other").optional(),
+      dateOfBirth: z
+        .string()
+        .optional()
+        .refine((value) => !value || !isNaN(Date.parse(value)), {
+          message: "Invalid date format. Must be a valid date.",
+        })
+        .optional(),
+      address: z.string().optional(),
+      photo: z
+        .string()
+        .regex(
+          /^(http(s)?:\/\/.*\.(?:png|jpg|jpeg))$/,
+          "Invalid photo URL format. Must be a valid image URL."
+        )
+        .optional(),
+    })
+    .strict(),
+});
+
+const updateUserValidationSchema = z.object({
+  body: z.object({
+    name: z.string().min(1, "Name is required").optional(),
+    email: z.string().email("Invalid email address").optional(),
+    phone: z.string().optional(),
+    role: z
+      .enum([ UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EDITOR, UserRole.PUBLISHER ])
+      .default(UserRole.SUPER_ADMIN)
+      .optional(),
+    roleId: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid role ID format").optional(),
+    designationId: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid designation ID format").optional(),
+    profilePhoto: z.string().optional(),
+    isActive: z.boolean().optional(),
+  }).strict(),
+});
+
+const changePasswordValidationSchema = z.object({
+  body: z.object({
+    newPassword: z.string().min(6, "Password must be at least 6 characters long"),
+    oldPassword: z.string().optional(), // Optional for admin password change
+  }),
+});
+
+export const UserValidation = {
+  userValidationSchema,
+  customerInfoValidationSchema,
+  updateUserValidationSchema,
+  changePasswordValidationSchema,
+};

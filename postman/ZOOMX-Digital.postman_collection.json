@@ -1,0 +1,872 @@
+{
+  "info": {
+    "name": "ZOOMX Digital API",
+    "_postman_id": "f1c2b3a4-5d6e-47f8-9a0b-1c2d3e4f5a6b",
+    "description": "Complete backend API collection for ZOOMX Digital.\n\nBase URL: {{baseUrl}} (default http://localhost:5005/api)\n\nAuth: Most write endpoints require a Bearer token. Run **Auth > Login** first — it auto-saves the token to the {{token}} collection variable. Public endpoints are marked (Public).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5005/api" },
+    { "key": "token", "value": "" },
+    { "key": "userId", "value": "" },
+    { "key": "roleId", "value": "" },
+    { "key": "designationId", "value": "" },
+    { "key": "employeeId", "value": "" },
+    { "key": "productId", "value": "" },
+    { "key": "categoryId", "value": "" },
+    { "key": "orderId", "value": "" },
+    { "key": "brandId", "value": "" },
+    { "key": "blogSlug", "value": "" },
+    { "key": "countryId", "value": "" },
+    { "key": "teamMemberId", "value": "" },
+    { "key": "folderId", "value": "" },
+    { "key": "shippingMethodId", "value": "" },
+    { "key": "notificationId", "value": "" },
+    { "key": "permissionId", "value": "" },
+    { "key": "rolePermissionId", "value": "" },
+    { "key": "reviewId", "value": "" },
+    { "key": "commentId", "value": "" },
+    { "key": "servicesCountryId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login (Public)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res && res.data && res.data.token) {",
+                  "  pm.collectionVariables.set('token', res.data.token);",
+                  "  console.log('Token saved to {{token}}');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/auth/refresh-token", "host": ["{{baseUrl}}"], "path": ["auth", "refresh-token"] }
+          }
+        },
+        {
+          "name": "Change Password (Auth)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"oldPassword\": \"123456\",\n  \"newPassword\": \"newpass123\"\n}" },
+            "url": { "raw": "{{baseUrl}}/auth/change-password", "host": ["{{baseUrl}}"], "path": ["auth", "change-password"] }
+          }
+        },
+        {
+          "name": "Forgot Password (Public)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@example.com\"\n}" },
+            "url": { "raw": "{{baseUrl}}/auth/forgot-password", "host": ["{{baseUrl}}"], "path": ["auth", "forgot-password"] }
+          }
+        },
+        {
+          "name": "Reset Password (Public)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@example.com\",\n  \"code\": \"123456\",\n  \"newPassword\": \"newpass123\"\n}" },
+            "url": { "raw": "{{baseUrl}}/auth/reset-password", "host": ["{{baseUrl}}"], "path": ["auth", "reset-password"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Register User (Public)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"123456\",\n  \"role\": \"SUPER_ADMIN\",\n  \"clientInfo\": {\n    \"device\": \"pc\",\n    \"browser\": \"Chrome\",\n    \"ipAddress\": \"127.0.0.1\",\n    \"pcName\": \"DESKTOP-1\",\n    \"os\": \"Windows 10\",\n    \"userAgent\": \"Mozilla/5.0\"\n  }\n}" },
+            "url": { "raw": "{{baseUrl}}/user", "host": ["{{baseUrl}}"], "path": ["user"] }
+          }
+        },
+        {
+          "name": "Get All Users",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/user", "host": ["{{baseUrl}}"], "path": ["user"] } }
+        },
+        {
+          "name": "My Profile",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/user/me", "host": ["{{baseUrl}}"], "path": ["user", "me"] } }
+        },
+        {
+          "name": "Update User Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"isActive\": false\n}" },
+            "url": { "raw": "{{baseUrl}}/user/{{userId}}/status", "host": ["{{baseUrl}}"], "path": ["user", "{{userId}}", "status"] }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"John Updated\",\n  \"phone\": \"01712345678\"\n}" },
+            "url": { "raw": "{{baseUrl}}/user/{{userId}}", "host": ["{{baseUrl}}"], "path": ["user", "{{userId}}"] }
+          }
+        },
+        {
+          "name": "Change User Password",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"newPassword\": \"newpass123\",\n  \"oldPassword\": \"123456\"\n}" },
+            "url": { "raw": "{{baseUrl}}/user/{{userId}}/password", "host": ["{{baseUrl}}"], "path": ["user", "{{userId}}", "password"] }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/user/{{userId}}", "host": ["{{baseUrl}}"], "path": ["user", "{{userId}}"] } }
+        }
+      ]
+    },
+    {
+      "name": "Roles",
+      "item": [
+        { "name": "Get All Roles", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/roles", "host": ["{{baseUrl}}"], "path": ["roles"] } } },
+        { "name": "Get Role By Id", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/roles/{{roleId}}", "host": ["{{baseUrl}}"], "path": ["roles", "{{roleId}}"] } } },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"role\": \"ADMIN\",\n  \"description\": \"Administrator role\",\n  \"isActive\": true\n}" },
+            "url": { "raw": "{{baseUrl}}/roles", "host": ["{{baseUrl}}"], "path": ["roles"] }
+          }
+        },
+        {
+          "name": "Update Role",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"role\": \"MANAGER\",\n  \"description\": \"Updated\"\n}" },
+            "url": { "raw": "{{baseUrl}}/roles/{{roleId}}", "host": ["{{baseUrl}}"], "path": ["roles", "{{roleId}}"] }
+          }
+        },
+        {
+          "name": "Toggle Role Status",
+          "request": { "method": "PATCH", "header": [], "url": { "raw": "{{baseUrl}}/roles/{{roleId}}/status", "host": ["{{baseUrl}}"], "path": ["roles", "{{roleId}}", "status"] } }
+        },
+        { "name": "Delete Role", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/roles/{{roleId}}", "host": ["{{baseUrl}}"], "path": ["roles", "{{roleId}}"] } } }
+      ]
+    },
+    {
+      "name": "Role Permissions",
+      "item": [
+        { "name": "Get All Role Permissions", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/role-permissions", "host": ["{{baseUrl}}"], "path": ["role-permissions"] } } },
+        { "name": "Get By Role Id", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/role-permissions/role/{{roleId}}", "host": ["{{baseUrl}}"], "path": ["role-permissions", "role", "{{roleId}}"] } } },
+        {
+          "name": "Create Role Permission",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"roleId\": \"{{roleId}}\",\n  \"module\": \"Products\",\n  \"permissions\": [\"view\", \"create\", \"update\", \"delete\"]\n}" },
+            "url": { "raw": "{{baseUrl}}/role-permissions", "host": ["{{baseUrl}}"], "path": ["role-permissions"] }
+          }
+        },
+        {
+          "name": "Update Role Permission",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"permissions\": [\"view\", \"update\"]\n}" },
+            "url": { "raw": "{{baseUrl}}/role-permissions/{{rolePermissionId}}", "host": ["{{baseUrl}}"], "path": ["role-permissions", "{{rolePermissionId}}"] }
+          }
+        },
+        { "name": "Delete Role Permission", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/role-permissions/{{rolePermissionId}}", "host": ["{{baseUrl}}"], "path": ["role-permissions", "{{rolePermissionId}}"] } } }
+      ]
+    },
+    {
+      "name": "Permissions",
+      "item": [
+        { "name": "Get All Permissions (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/permissions", "host": ["{{baseUrl}}"], "path": ["permissions"] } } },
+        {
+          "name": "Create Permission (Public)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"module\": \"Products\",\n  \"description\": \"Product management\",\n  \"actions\": [\"view\", \"create\", \"update\", \"delete\"]\n}" },
+            "url": { "raw": "{{baseUrl}}/permissions", "host": ["{{baseUrl}}"], "path": ["permissions"] }
+          }
+        },
+        {
+          "name": "Update Permission (Public)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"actions\": [\"view\", \"create\"]\n}" },
+            "url": { "raw": "{{baseUrl}}/permissions/{{permissionId}}", "host": ["{{baseUrl}}"], "path": ["permissions", "{{permissionId}}"] }
+          }
+        },
+        { "name": "Delete Permission (Public)", "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/permissions/{{permissionId}}", "host": ["{{baseUrl}}"], "path": ["permissions", "{{permissionId}}"] } } }
+      ]
+    },
+    {
+      "name": "Designations",
+      "item": [
+        { "name": "Get All Designations", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/designations", "host": ["{{baseUrl}}"], "path": ["designations"] } } },
+        {
+          "name": "Create Designation",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Manager\",\n  \"description\": \"Branch manager\",\n  \"is_active\": true\n}" },
+            "url": { "raw": "{{baseUrl}}/designations", "host": ["{{baseUrl}}"], "path": ["designations"] }
+          }
+        },
+        {
+          "name": "Update Designation",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Senior Manager\"\n}" },
+            "url": { "raw": "{{baseUrl}}/designations/{{designationId}}", "host": ["{{baseUrl}}"], "path": ["designations", "{{designationId}}"] }
+          }
+        },
+        { "name": "Toggle Designation Status", "request": { "method": "PATCH", "header": [], "url": { "raw": "{{baseUrl}}/designations/{{designationId}}/status", "host": ["{{baseUrl}}"], "path": ["designations", "{{designationId}}", "status"] } } },
+        { "name": "Delete Designation", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/designations/{{designationId}}", "host": ["{{baseUrl}}"], "path": ["designations", "{{designationId}}"] } } }
+      ]
+    },
+    {
+      "name": "Employees",
+      "item": [
+        { "name": "Get All Employees", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/employees", "host": ["{{baseUrl}}"], "path": ["employees"] } } },
+        { "name": "Get Employee By Id", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/employees/{{employeeId}}", "host": ["{{baseUrl}}"], "path": ["employees", "{{employeeId}}"] } } },
+        {
+          "name": "Create Employee",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Jane Employee\",\n  \"email\": \"jane@example.com\",\n  \"password\": \"123456\",\n  \"phone\": \"01712345678\",\n  \"roleId\": \"{{roleId}}\",\n  \"designationId\": \"{{designationId}}\"\n}" },
+            "url": { "raw": "{{baseUrl}}/employees", "host": ["{{baseUrl}}"], "path": ["employees"] }
+          }
+        },
+        {
+          "name": "Update Employee",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Jane Updated\",\n  \"isActive\": true\n}" },
+            "url": { "raw": "{{baseUrl}}/employees/{{employeeId}}", "host": ["{{baseUrl}}"], "path": ["employees", "{{employeeId}}"] }
+          }
+        },
+        { "name": "Toggle Employee Status", "request": { "method": "PATCH", "header": [], "url": { "raw": "{{baseUrl}}/employees/{{employeeId}}/status", "host": ["{{baseUrl}}"], "path": ["employees", "{{employeeId}}", "status"] } } },
+        {
+          "name": "Change Employee Password",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"newPassword\": \"newpass123\"\n}" },
+            "url": { "raw": "{{baseUrl}}/employees/{{employeeId}}/password", "host": ["{{baseUrl}}"], "path": ["employees", "{{employeeId}}", "password"] }
+          }
+        },
+        { "name": "Delete Employee", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/employees/{{employeeId}}", "host": ["{{baseUrl}}"], "path": ["employees", "{{employeeId}}"] } } }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        { "name": "Get All Categories (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/categories", "host": ["{{baseUrl}}"], "path": ["categories"] } } },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Electronics\",\n  \"slug\": \"electronics\",\n  \"desc\": \"Electronic products\",\n  \"slNumber\": 1,\n  \"isHome\": true,\n  \"status\": \"active\"\n}" },
+            "url": { "raw": "{{baseUrl}}/categories", "host": ["{{baseUrl}}"], "path": ["categories"] }
+          }
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Electronics Updated\"\n}" },
+            "url": { "raw": "{{baseUrl}}/categories/{{categoryId}}", "host": ["{{baseUrl}}"], "path": ["categories", "{{categoryId}}"] }
+          }
+        },
+        { "name": "Delete Category", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/categories/{{categoryId}}", "host": ["{{baseUrl}}"], "path": ["categories", "{{categoryId}}"] } } }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Create Product (Public)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Sample Product\",\n  \"slug\": \"sample-product\",\n  \"shortDescription\": \"Short desc\",\n  \"description\": \"Full description\",\n  \"categoryId\": \"{{categoryId}}\",\n  \"brand\": \"Sample Brand\",\n  \"sku\": \"SKU-001\",\n  \"price\": 1000,\n  \"discount\": 100,\n  \"comparePrice\": 1200,\n  \"currency\": \"BDT\",\n  \"colors\": [{ \"name\": \"Red\", \"value\": \"#ff0000\" }],\n  \"sizes\": [\"S\", \"M\", \"L\"],\n  \"discountTiers\": [{ \"minAmount\": 5000, \"discountAmount\": 200, \"note\": \"Bulk\" }],\n  \"freeShipping\": false,\n  \"inStock\": true,\n  \"stockQuantity\": 50,\n  \"status\": \"active\"\n}" },
+            "url": { "raw": "{{baseUrl}}/products", "host": ["{{baseUrl}}"], "path": ["products"] }
+          }
+        },
+        { "name": "Get All Products (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/products", "host": ["{{baseUrl}}"], "path": ["products"] } } },
+        { "name": "Get Products By Category (query) (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/products/by-category?categoryId={{categoryId}}", "host": ["{{baseUrl}}"], "path": ["products", "by-category"], "query": [{ "key": "categoryId", "value": "{{categoryId}}" }] } } },
+        { "name": "Get Category Counts (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/products/category-counts", "host": ["{{baseUrl}}"], "path": ["products", "category-counts"] } } },
+        { "name": "Get Products By Category Slug (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/products/category/electronics", "host": ["{{baseUrl}}"], "path": ["products", "category", "electronics"] } } },
+        { "name": "Get Single Product (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/products/{{productId}}", "host": ["{{baseUrl}}"], "path": ["products", "{{productId}}"] } } },
+        {
+          "name": "Update Product (Public)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"price\": 1100,\n  \"stockQuantity\": 40\n}" },
+            "url": { "raw": "{{baseUrl}}/products/{{productId}}", "host": ["{{baseUrl}}"], "path": ["products", "{{productId}}"] }
+          }
+        },
+        { "name": "Delete Product (Public)", "request": { "auth": { "type": "noauth" }, "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/products/{{productId}}", "host": ["{{baseUrl}}"], "path": ["products", "{{productId}}"] } } }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Create Order (Public)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"items\": [\n    { \"productId\": \"{{productId}}\", \"size\": \"M\", \"color\": \"Red\", \"qty\": 2 }\n  ],\n  \"customerName\": \"John Buyer\",\n  \"phone\": \"01712345678\",\n  \"address\": \"123 Main St, Dhaka\",\n  \"shippingMethodId\": \"{{shippingMethodId}}\",\n  \"paymentMethod\": \"cod\",\n  \"notes\": \"Please call before delivery\"\n}" },
+            "url": { "raw": "{{baseUrl}}/orders", "host": ["{{baseUrl}}"], "path": ["orders"] }
+          }
+        },
+        { "name": "Get All Orders", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/orders", "host": ["{{baseUrl}}"], "path": ["orders"] } } },
+        { "name": "Get Status Counts", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/orders/status-counts", "host": ["{{baseUrl}}"], "path": ["orders", "status-counts"] } } },
+        { "name": "Get Deleted Orders (Bin)", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/orders/bin", "host": ["{{baseUrl}}"], "path": ["orders", "bin"] } } },
+        { "name": "Get Single Order", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/orders/{{orderId}}", "host": ["{{baseUrl}}"], "path": ["orders", "{{orderId}}"] } } },
+        {
+          "name": "Update Order",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"confirmed\",\n  \"note\": \"Confirmed by phone\"\n}" },
+            "url": { "raw": "{{baseUrl}}/orders/{{orderId}}", "host": ["{{baseUrl}}"], "path": ["orders", "{{orderId}}"] }
+          }
+        },
+        { "name": "Soft Delete Order", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/orders/{{orderId}}", "host": ["{{baseUrl}}"], "path": ["orders", "{{orderId}}"] } } },
+        { "name": "Restore Order", "request": { "method": "PATCH", "header": [], "url": { "raw": "{{baseUrl}}/orders/{{orderId}}/restore", "host": ["{{baseUrl}}"], "path": ["orders", "{{orderId}}", "restore"] } } },
+        { "name": "Permanent Delete Order", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/orders/{{orderId}}/permanent", "host": ["{{baseUrl}}"], "path": ["orders", "{{orderId}}", "permanent"] } } }
+      ]
+    },
+    {
+      "name": "Shipping Methods",
+      "item": [
+        { "name": "Get Active Shipping Methods (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/shipping-methods", "host": ["{{baseUrl}}"], "path": ["shipping-methods"] } } },
+        { "name": "Get All Shipping Methods", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/shipping-methods/all", "host": ["{{baseUrl}}"], "path": ["shipping-methods", "all"] } } },
+        {
+          "name": "Create Shipping Method",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Inside Dhaka\",\n  \"description\": \"Delivery within Dhaka city\",\n  \"price\": 60,\n  \"slNumber\": 1,\n  \"isDefault\": true,\n  \"isActive\": true\n}" },
+            "url": { "raw": "{{baseUrl}}/shipping-methods", "host": ["{{baseUrl}}"], "path": ["shipping-methods"] }
+          }
+        },
+        {
+          "name": "Update Shipping Method",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"price\": 80\n}" },
+            "url": { "raw": "{{baseUrl}}/shipping-methods/{{shippingMethodId}}", "host": ["{{baseUrl}}"], "path": ["shipping-methods", "{{shippingMethodId}}"] }
+          }
+        },
+        { "name": "Delete Shipping Method", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/shipping-methods/{{shippingMethodId}}", "host": ["{{baseUrl}}"], "path": ["shipping-methods", "{{shippingMethodId}}"] } } }
+      ]
+    },
+    {
+      "name": "Brands",
+      "item": [
+        { "name": "Get Brands (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/brands", "host": ["{{baseUrl}}"], "path": ["brands"] } } },
+        {
+          "name": "Create Brand",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Acme\",\n  \"description\": \"Acme brand products\",\n  \"logo\": \"logo.png\",\n  \"website\": \"https://acme.com\",\n  \"email\": \"info@acme.com\",\n  \"phone\": \"01712345678\",\n  \"address\": \"Dhaka\"\n}" },
+            "url": { "raw": "{{baseUrl}}/brands/create", "host": ["{{baseUrl}}"], "path": ["brands", "create"] }
+          }
+        },
+        {
+          "name": "Update Brand",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"description\": \"Updated description\"\n}" },
+            "url": { "raw": "{{baseUrl}}/brands/{{brandId}}", "host": ["{{baseUrl}}"], "path": ["brands", "{{brandId}}"] }
+          }
+        },
+        { "name": "Delete Brand", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/brands/{{brandId}}", "host": ["{{baseUrl}}"], "path": ["brands", "{{brandId}}"] } } }
+      ]
+    },
+    {
+      "name": "Blogs",
+      "item": [
+        { "name": "Get All Blogs (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/blogs", "host": ["{{baseUrl}}"], "path": ["blogs"] } } },
+        { "name": "Get Category List (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/blogs/categories", "host": ["{{baseUrl}}"], "path": ["blogs", "categories"] } } },
+        { "name": "Get Blogs By Category (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/blogs/categories/tech", "host": ["{{baseUrl}}"], "path": ["blogs", "categories", "tech"] } } },
+        { "name": "Get All Authors (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/blogs/authors", "host": ["{{baseUrl}}"], "path": ["blogs", "authors"] } } },
+        { "name": "Get Blogs By Author (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/blogs/author/johndoe", "host": ["{{baseUrl}}"], "path": ["blogs", "author", "johndoe"] } } },
+        { "name": "Get Single Blog (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/blogs/{{blogSlug}}", "host": ["{{baseUrl}}"], "path": ["blogs", "{{blogSlug}}"] } } },
+        {
+          "name": "Create Blog",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"My First Blog\",\n  \"sort_description\": \"A short intro\",\n  \"content\": \"<p>Full content here</p>\",\n  \"excerpt\": \"Short excerpt\",\n  \"category\": \"tech\",\n  \"tags\": [\"node\", \"express\"],\n  \"status\": true,\n  \"seo\": { \"metaTitle\": \"My Blog\", \"metaDescription\": \"desc\", \"metaKeywords\": [\"blog\"] }\n}" },
+            "url": { "raw": "{{baseUrl}}/blogs/create", "host": ["{{baseUrl}}"], "path": ["blogs", "create"] }
+          }
+        },
+        {
+          "name": "Update Blog Status",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": true\n}" },
+            "url": { "raw": "{{baseUrl}}/blogs/status/{{blogSlug}}", "host": ["{{baseUrl}}"], "path": ["blogs", "status", "{{blogSlug}}"] }
+          }
+        },
+        {
+          "name": "Update Blog",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Updated Title\"\n}" },
+            "url": { "raw": "{{baseUrl}}/blogs/{{blogSlug}}", "host": ["{{baseUrl}}"], "path": ["blogs", "{{blogSlug}}"] }
+          }
+        },
+        { "name": "Delete Blog", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/blogs/{{blogSlug}}", "host": ["{{baseUrl}}"], "path": ["blogs", "{{blogSlug}}"] } } }
+      ]
+    },
+    {
+      "name": "Blog Comments",
+      "item": [
+        {
+          "name": "Create Comment (Public)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Reader\",\n  \"emailOrPhone\": \"reader@example.com\",\n  \"comment\": \"Great post!\",\n  \"blog\": \"{{blogSlug}}\"\n}" },
+            "url": { "raw": "{{baseUrl}}/comments/create", "host": ["{{baseUrl}}"], "path": ["comments", "create"] }
+          }
+        },
+        { "name": "Get All Comments", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/comments", "host": ["{{baseUrl}}"], "path": ["comments"] } } },
+        {
+          "name": "Update Comment Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"approved\"\n}" },
+            "url": { "raw": "{{baseUrl}}/comments/status/{{commentId}}", "host": ["{{baseUrl}}"], "path": ["comments", "status", "{{commentId}}"] }
+          }
+        },
+        { "name": "Delete Comment", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/comments/{{commentId}}", "host": ["{{baseUrl}}"], "path": ["comments", "{{commentId}}"] } } }
+      ]
+    },
+    {
+      "name": "Product Reviews",
+      "item": [
+        {
+          "name": "Create Review (Public)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Reviewer\",\n  \"emailOrPhone\": \"reviewer@example.com\",\n  \"rating\": 5,\n  \"comment\": \"Excellent product!\",\n  \"product\": \"{{productId}}\"\n}" },
+            "url": { "raw": "{{baseUrl}}/product-reviews/create", "host": ["{{baseUrl}}"], "path": ["product-reviews", "create"] }
+          }
+        },
+        { "name": "Get Product Reviews (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/product-reviews/product/{{productId}}", "host": ["{{baseUrl}}"], "path": ["product-reviews", "product", "{{productId}}"] } } },
+        { "name": "Get All Reviews", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/product-reviews", "host": ["{{baseUrl}}"], "path": ["product-reviews"] } } },
+        {
+          "name": "Update Review Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"approved\"\n}" },
+            "url": { "raw": "{{baseUrl}}/product-reviews/status/{{reviewId}}", "host": ["{{baseUrl}}"], "path": ["product-reviews", "status", "{{reviewId}}"] }
+          }
+        },
+        {
+          "name": "Update Review",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"rating\": 4,\n  \"comment\": \"Updated comment\"\n}" },
+            "url": { "raw": "{{baseUrl}}/product-reviews/{{reviewId}}", "host": ["{{baseUrl}}"], "path": ["product-reviews", "{{reviewId}}"] }
+          }
+        },
+        { "name": "Delete Review", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/product-reviews/{{reviewId}}", "host": ["{{baseUrl}}"], "path": ["product-reviews", "{{reviewId}}"] } } }
+      ]
+    },
+    {
+      "name": "Countries",
+      "item": [
+        { "name": "Get All Countries (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/countries", "host": ["{{baseUrl}}"], "path": ["countries"] } } },
+        { "name": "Get Country By Id (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/countries/{{countryId}}", "host": ["{{baseUrl}}"], "path": ["countries", "{{countryId}}"] } } },
+        {
+          "name": "Create Country",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Bangladesh\",\n  \"code\": \"BD\",\n  \"flag\": \"https://flags.example.com/bd.png\",\n  \"role\": \"Head Office\",\n  \"address\": \"Dhaka, Bangladesh\",\n  \"email\": \"bd@example.com\",\n  \"phone\": \"01712345678\",\n  \"accentSolid\": \"#22c55e\",\n  \"isActive\": true\n}" },
+            "url": { "raw": "{{baseUrl}}/countries", "host": ["{{baseUrl}}"], "path": ["countries"] }
+          }
+        },
+        {
+          "name": "Update Country",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"address\": \"New address\"\n}" },
+            "url": { "raw": "{{baseUrl}}/countries/{{countryId}}", "host": ["{{baseUrl}}"], "path": ["countries", "{{countryId}}"] }
+          }
+        },
+        { "name": "Toggle Country Status", "request": { "method": "PATCH", "header": [], "url": { "raw": "{{baseUrl}}/countries/{{countryId}}/status", "host": ["{{baseUrl}}"], "path": ["countries", "{{countryId}}", "status"] } } },
+        {
+          "name": "Update Country Serial",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"serial_no\": 2\n}" },
+            "url": { "raw": "{{baseUrl}}/countries/{{countryId}}/serial", "host": ["{{baseUrl}}"], "path": ["countries", "{{countryId}}", "serial"] }
+          }
+        },
+        { "name": "Delete Country", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/countries/{{countryId}}", "host": ["{{baseUrl}}"], "path": ["countries", "{{countryId}}"] } } }
+      ]
+    },
+    {
+      "name": "Services Countries",
+      "item": [
+        { "name": "Get All (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/services-countries", "host": ["{{baseUrl}}"], "path": ["services-countries"] } } },
+        { "name": "Get By Id (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/services-countries/{{servicesCountryId}}", "host": ["{{baseUrl}}"], "path": ["services-countries", "{{servicesCountryId}}"] } } },
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"China\",\n  \"slug\": \"china\",\n  \"isActive\": true\n}" },
+            "url": { "raw": "{{baseUrl}}/services-countries", "host": ["{{baseUrl}}"], "path": ["services-countries"] }
+          }
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"China Updated\"\n}" },
+            "url": { "raw": "{{baseUrl}}/services-countries/{{servicesCountryId}}", "host": ["{{baseUrl}}"], "path": ["services-countries", "{{servicesCountryId}}"] }
+          }
+        },
+        { "name": "Delete", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/services-countries/{{servicesCountryId}}", "host": ["{{baseUrl}}"], "path": ["services-countries", "{{servicesCountryId}}"] } } }
+      ]
+    },
+    {
+      "name": "Team Members",
+      "item": [
+        { "name": "Get All (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/team-members", "host": ["{{baseUrl}}"], "path": ["team-members"] } } },
+        { "name": "Get By Id (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/team-members/{{teamMemberId}}", "host": ["{{baseUrl}}"], "path": ["team-members", "{{teamMemberId}}"] } } },
+        {
+          "name": "Create Team Member",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Team Guy\",\n  \"email\": \"team@example.com\",\n  \"phone\": \"01712345678\",\n  \"designation\": \"Developer\",\n  \"department\": \"Engineering\",\n  \"bio\": \"Short bio\",\n  \"socialLinks\": [{ \"name\": \"linkedin\", \"link\": \"https://linkedin.com/in/x\" }],\n  \"is_new\": true,\n  \"isActive\": true,\n  \"isTeamLead\": false\n}" },
+            "url": { "raw": "{{baseUrl}}/team-members", "host": ["{{baseUrl}}"], "path": ["team-members"] }
+          }
+        },
+        {
+          "name": "Update Team Member",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"designation\": \"Senior Developer\"\n}" },
+            "url": { "raw": "{{baseUrl}}/team-members/{{teamMemberId}}", "host": ["{{baseUrl}}"], "path": ["team-members", "{{teamMemberId}}"] }
+          }
+        },
+        { "name": "Toggle Status", "request": { "method": "PATCH", "header": [], "url": { "raw": "{{baseUrl}}/team-members/{{teamMemberId}}/status", "host": ["{{baseUrl}}"], "path": ["team-members", "{{teamMemberId}}", "status"] } } },
+        { "name": "Toggle Is-New", "request": { "method": "PATCH", "header": [], "url": { "raw": "{{baseUrl}}/team-members/{{teamMemberId}}/is-new", "host": ["{{baseUrl}}"], "path": ["team-members", "{{teamMemberId}}", "is-new"] } } },
+        { "name": "Toggle Is-Team-Lead", "request": { "method": "PATCH", "header": [], "url": { "raw": "{{baseUrl}}/team-members/{{teamMemberId}}/is-team-lead", "host": ["{{baseUrl}}"], "path": ["team-members", "{{teamMemberId}}", "is-team-lead"] } } },
+        {
+          "name": "Update Serial",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"serial_no\": 3\n}" },
+            "url": { "raw": "{{baseUrl}}/team-members/{{teamMemberId}}/serial", "host": ["{{baseUrl}}"], "path": ["team-members", "{{teamMemberId}}", "serial"] }
+          }
+        },
+        { "name": "Delete Team Member", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/team-members/{{teamMemberId}}", "host": ["{{baseUrl}}"], "path": ["team-members", "{{teamMemberId}}"] } } }
+      ]
+    },
+    {
+      "name": "Team Member Contacts",
+      "item": [
+        {
+          "name": "Create Contact (Public)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"phone\": \"01712345678\",\n  \"question\": \"Can I get a quote?\",\n  \"memberId\": \"{{teamMemberId}}\"\n}" },
+            "url": { "raw": "{{baseUrl}}/team-member-contacts", "host": ["{{baseUrl}}"], "path": ["team-member-contacts"] }
+          }
+        },
+        { "name": "Get All Contacts", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/team-member-contacts", "host": ["{{baseUrl}}"], "path": ["team-member-contacts"] } } },
+        { "name": "Get Contact By Id", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/team-member-contacts/{{teamMemberId}}", "host": ["{{baseUrl}}"], "path": ["team-member-contacts", "{{teamMemberId}}"] } } },
+        { "name": "Delete Contact", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/team-member-contacts/{{teamMemberId}}", "host": ["{{baseUrl}}"], "path": ["team-member-contacts", "{{teamMemberId}}"] } } }
+      ]
+    },
+    {
+      "name": "Inquiries",
+      "item": [
+        {
+          "name": "Contact Message (Public)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"John\",\n  \"email\": \"john@example.com\",\n  \"phone\": \"01712345678\",\n  \"subject\": \"Question\",\n  \"message\": \"I have a question\"\n}" },
+            "url": { "raw": "{{baseUrl}}/inquiries/contact", "host": ["{{baseUrl}}"], "path": ["inquiries", "contact"] }
+          }
+        },
+        {
+          "name": "Quotation Request (Public)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"John\",\n  \"email\": \"john@example.com\",\n  \"phone\": \"01712345678\",\n  \"site_url\": \"https://example.com\",\n  \"company_name\": \"Acme\",\n  \"service\": \"Web Development\",\n  \"budget\": \"1000-5000\",\n  \"message\": \"Need a website\"\n}" },
+            "url": { "raw": "{{baseUrl}}/inquiries/quotation", "host": ["{{baseUrl}}"], "path": ["inquiries", "quotation"] }
+          }
+        },
+        { "name": "All Contact Messages", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/inquiries/all-contact", "host": ["{{baseUrl}}"], "path": ["inquiries", "all-contact"] } } },
+        { "name": "All Quotation Requests", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/inquiries/all-quotation", "host": ["{{baseUrl}}"], "path": ["inquiries", "all-quotation"] } } },
+        { "name": "Delete Quotation", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/inquiries/quotation/:id", "host": ["{{baseUrl}}"], "path": ["inquiries", "quotation", ":id"] } } },
+        { "name": "Send Quotation Email", "request": { "method": "POST", "header": [], "url": { "raw": "{{baseUrl}}/inquiries/quotation/:id/send-email", "host": ["{{baseUrl}}"], "path": ["inquiries", "quotation", ":id", "send-email"] } } },
+        { "name": "Send Contact Email", "request": { "method": "POST", "header": [], "url": { "raw": "{{baseUrl}}/inquiries/contact/:id/send-email", "host": ["{{baseUrl}}"], "path": ["inquiries", "contact", ":id", "send-email"] } } }
+      ]
+    },
+    {
+      "name": "Media Library",
+      "item": [
+        { "name": "Get All Media", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/media-library", "host": ["{{baseUrl}}"], "path": ["media-library"] } } },
+        {
+          "name": "Upload Media (form-data)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": { "mode": "formdata", "formdata": [{ "key": "file", "type": "file", "src": [] }] },
+            "url": { "raw": "{{baseUrl}}/media-library", "host": ["{{baseUrl}}"], "path": ["media-library"] }
+          }
+        },
+        {
+          "name": "Rename Media",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"id\": \"MEDIA_ID\",\n  \"newName\": \"renamed.png\"\n}" },
+            "url": { "raw": "{{baseUrl}}/media-library/rename", "host": ["{{baseUrl}}"], "path": ["media-library", "rename"] }
+          }
+        },
+        {
+          "name": "Move Media",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"id\": \"MEDIA_ID\",\n  \"folderId\": \"{{folderId}}\"\n}" },
+            "url": { "raw": "{{baseUrl}}/media-library/move", "host": ["{{baseUrl}}"], "path": ["media-library", "move"] }
+          }
+        },
+        { "name": "Get Media Usage", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/media-library/usage/:id", "host": ["{{baseUrl}}"], "path": ["media-library", "usage", ":id"] } } },
+        { "name": "Get Binned Media", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/media-library/bin", "host": ["{{baseUrl}}"], "path": ["media-library", "bin"] } } },
+        {
+          "name": "Bulk Restore Media",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"ids\": [\"MEDIA_ID_1\", \"MEDIA_ID_2\"]\n}" },
+            "url": { "raw": "{{baseUrl}}/media-library/bin/bulk-restore", "host": ["{{baseUrl}}"], "path": ["media-library", "bin", "bulk-restore"] }
+          }
+        },
+        {
+          "name": "Bulk Purge Media",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"ids\": [\"MEDIA_ID_1\", \"MEDIA_ID_2\"]\n}" },
+            "url": { "raw": "{{baseUrl}}/media-library/bin/bulk-purge", "host": ["{{baseUrl}}"], "path": ["media-library", "bin", "bulk-purge"] }
+          }
+        },
+        { "name": "Restore Media (single)", "request": { "method": "PATCH", "header": [], "url": { "raw": "{{baseUrl}}/media-library/restore/MEDIA_ID", "host": ["{{baseUrl}}"], "path": ["media-library", "restore", "MEDIA_ID"] } } },
+        { "name": "Purge Media (single)", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/media-library/purge/MEDIA_ID", "host": ["{{baseUrl}}"], "path": ["media-library", "purge", "MEDIA_ID"] } } },
+        { "name": "Soft Delete Media", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/media-library/MEDIA_ID", "host": ["{{baseUrl}}"], "path": ["media-library", "MEDIA_ID"] } } }
+      ]
+    },
+    {
+      "name": "Folders",
+      "item": [
+        { "name": "Get Folders (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/folders?parent={{folderId}}", "host": ["{{baseUrl}}"], "path": ["folders"], "query": [{ "key": "parent", "value": "{{folderId}}" }] } } },
+        { "name": "Get Folder Tree (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/folders/tree", "host": ["{{baseUrl}}"], "path": ["folders", "tree"] } } },
+        { "name": "Get Folder By Id (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/folders/{{folderId}}", "host": ["{{baseUrl}}"], "path": ["folders", "{{folderId}}"] } } },
+        {
+          "name": "Create Folder",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"My Folder\",\n  \"parent\": null\n}" },
+            "url": { "raw": "{{baseUrl}}/folders/create", "host": ["{{baseUrl}}"], "path": ["folders", "create"] }
+          }
+        },
+        {
+          "name": "Update Folder",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Renamed Folder\"\n}" },
+            "url": { "raw": "{{baseUrl}}/folders/{{folderId}}", "host": ["{{baseUrl}}"], "path": ["folders", "{{folderId}}"] }
+          }
+        },
+        { "name": "Delete Folder", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/folders/{{folderId}}", "host": ["{{baseUrl}}"], "path": ["folders", "{{folderId}}"] } } }
+      ]
+    },
+    {
+      "name": "Dynamic Content",
+      "item": [
+        { "name": "Get Content Map (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/dynamic-content/map?group=home", "host": ["{{baseUrl}}"], "path": ["dynamic-content", "map"], "query": [{ "key": "group", "value": "home" }] } } },
+        { "name": "Get Content By Group (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/dynamic-content/by-group/home", "host": ["{{baseUrl}}"], "path": ["dynamic-content", "by-group", "home"] } } },
+        { "name": "Get All Contents", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/dynamic-content", "host": ["{{baseUrl}}"], "path": ["dynamic-content"] } } },
+        { "name": "Get Content History", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/dynamic-content/hero_title/history", "host": ["{{baseUrl}}"], "path": ["dynamic-content", "hero_title", "history"] } } },
+        {
+          "name": "Upsert Content",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"key\": \"hero_title\",\n  \"name\": \"Hero Title\",\n  \"value\": \"Welcome to ZOOMX\",\n  \"group\": \"home\",\n  \"type\": \"text\",\n  \"isActive\": true\n}" },
+            "url": { "raw": "{{baseUrl}}/dynamic-content/upsert", "host": ["{{baseUrl}}"], "path": ["dynamic-content", "upsert"] }
+          }
+        },
+        {
+          "name": "Bulk Upsert Content",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"contents\": [\n    { \"key\": \"hero_title\", \"value\": \"Title\", \"group\": \"home\" },\n    { \"key\": \"hero_subtitle\", \"value\": \"Subtitle\", \"group\": \"home\" }\n  ]\n}" },
+            "url": { "raw": "{{baseUrl}}/dynamic-content/bulk-upsert", "host": ["{{baseUrl}}"], "path": ["dynamic-content", "bulk-upsert"] }
+          }
+        },
+        {
+          "name": "Bulk Delete Content",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"keys\": [\"hero_title\", \"hero_subtitle\"]\n}" },
+            "url": { "raw": "{{baseUrl}}/dynamic-content/bulk-delete", "host": ["{{baseUrl}}"], "path": ["dynamic-content", "bulk-delete"] }
+          }
+        },
+        { "name": "Delete Content", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/dynamic-content/hero_title", "host": ["{{baseUrl}}"], "path": ["dynamic-content", "hero_title"] } } }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        { "name": "List Notifications", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/notifications", "host": ["{{baseUrl}}"], "path": ["notifications"] } } },
+        { "name": "Unread Count", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/notifications/unread-count", "host": ["{{baseUrl}}"], "path": ["notifications", "unread-count"] } } },
+        { "name": "Mark All As Read", "request": { "method": "PATCH", "header": [], "url": { "raw": "{{baseUrl}}/notifications/read-all", "host": ["{{baseUrl}}"], "path": ["notifications", "read-all"] } } },
+        { "name": "Get Notification By Id", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/notifications/{{notificationId}}", "host": ["{{baseUrl}}"], "path": ["notifications", "{{notificationId}}"] } } },
+        { "name": "Mark As Read", "request": { "method": "PATCH", "header": [], "url": { "raw": "{{baseUrl}}/notifications/{{notificationId}}/read", "host": ["{{baseUrl}}"], "path": ["notifications", "{{notificationId}}", "read"] } } },
+        { "name": "Delete Notification", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/notifications/{{notificationId}}", "host": ["{{baseUrl}}"], "path": ["notifications", "{{notificationId}}"] } } }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        { "name": "Overview", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/dashboard/overview", "host": ["{{baseUrl}}"], "path": ["dashboard", "overview"] } } },
+        { "name": "Stats", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/dashboard/stats", "host": ["{{baseUrl}}"], "path": ["dashboard", "stats"] } } },
+        { "name": "Monthly Performance", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/dashboard/monthly-performance", "host": ["{{baseUrl}}"], "path": ["dashboard", "monthly-performance"] } } },
+        { "name": "Traffic Sources", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/dashboard/traffic-sources", "host": ["{{baseUrl}}"], "path": ["dashboard", "traffic-sources"] } } },
+        { "name": "Weekly Activity", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/dashboard/weekly-activity", "host": ["{{baseUrl}}"], "path": ["dashboard", "weekly-activity"] } } },
+        { "name": "Quick Stats", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/dashboard/quick-stats", "host": ["{{baseUrl}}"], "path": ["dashboard", "quick-stats"] } } },
+        { "name": "Recent Projects", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/dashboard/recent-projects", "host": ["{{baseUrl}}"], "path": ["dashboard", "recent-projects"] } } },
+        { "name": "Monthly Goal", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/dashboard/monthly-goal", "host": ["{{baseUrl}}"], "path": ["dashboard", "monthly-goal"] } } }
+      ]
+    },
+    {
+      "name": "Page Views",
+      "item": [
+        {
+          "name": "Track Page View (Public)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"path\": \"/products\",\n  \"full_url\": \"https://example.com/products\",\n  \"referrer\": \"https://google.com\",\n  \"session_id\": \"sess-123\",\n  \"visitor_id\": \"visitor-123\",\n  \"duration_ms\": 5000\n}" },
+            "url": { "raw": "{{baseUrl}}/page-views/track", "host": ["{{baseUrl}}"], "path": ["page-views", "track"] }
+          }
+        },
+        { "name": "Quick Stats", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/page-views/quick-stats", "host": ["{{baseUrl}}"], "path": ["page-views", "quick-stats"] } } },
+        { "name": "Traffic Sources", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/page-views/traffic-sources", "host": ["{{baseUrl}}"], "path": ["page-views", "traffic-sources"] } } },
+        { "name": "Weekly Activity", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/page-views/weekly-activity", "host": ["{{baseUrl}}"], "path": ["page-views", "weekly-activity"] } } },
+        { "name": "Top Pages", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/page-views/top-pages", "host": ["{{baseUrl}}"], "path": ["page-views", "top-pages"] } } },
+        { "name": "Active Sessions", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/page-views/active-sessions", "host": ["{{baseUrl}}"], "path": ["page-views", "active-sessions"] } } }
+      ]
+    },
+    {
+      "name": "Logs",
+      "item": [
+        { "name": "Get All Action Logs", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/action-logs", "host": ["{{baseUrl}}"], "path": ["action-logs"] } } },
+        { "name": "Get All Error Logs", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/error-logs", "host": ["{{baseUrl}}"], "path": ["error-logs"] } } },
+        { "name": "Clear All Error Logs", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/error-logs/clear-all", "host": ["{{baseUrl}}"], "path": ["error-logs", "clear-all"] } } },
+        { "name": "Delete Error Log", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/error-logs/:id", "host": ["{{baseUrl}}"], "path": ["error-logs", ":id"] } } }
+      ]
+    },
+    {
+      "name": "Sitemap",
+      "item": [
+        { "name": "Get Sitemap Data (Public)", "request": { "auth": { "type": "noauth" }, "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/sitemap", "host": ["{{baseUrl}}"], "path": ["sitemap"] } } }
+      ]
+    }
+  ]
+}

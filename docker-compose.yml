@@ -1,0 +1,35 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27018:27017"
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+
+  backend:
+    build:
+      context: .
+    restart: unless-stopped
+    env_file:
+      - .env.development
+    environment:
+      DB_URL: mongodb://mongo:27017/zoomx_digital
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      - mongo
+      - redis
+    ports:
+      - "5005:5005"
+
+volumes:
+  mongo_data:
+  redis_data:
