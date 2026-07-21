@@ -31,6 +31,8 @@ import { ProductRoutes } from "../modules/product/product.routes";
 import { ShippingMethodRoutes } from "../modules/shipping-method/shipping-method.route";
 import { OrderRoutes } from "../modules/order/order.route";
 import { ProductReviewRoutes } from "../modules/productReview/productReview.routes";
+import { ProjectCategoryRoutes } from "../modules/projectCategory/projectCategory.routes";
+import { ProjectRoutes } from "../modules/project/project.routes";
 
 const router = Router();
 
@@ -162,6 +164,14 @@ const moduleRoutes = [
   {
     path: "/product-reviews",
     route: ProductReviewRoutes,
+  },
+  {
+    path: "/projects",
+    route: ProjectRoutes,
+  },
+  {
+    path: "/project-categories",
+    route: ProjectCategoryRoutes,
   },
 ];
 
