@@ -1,12 +1,8 @@
 import rateLimit from "express-rate-limit";
-import { RedisStore } from "rate-limit-redis";
-import redis from "../shared/redis";
 
-const redisStore = (prefix: string) =>
-  new RedisStore({
-    prefix,
-    sendCommand: (...args: string[]) => (redis.call as (...a: string[]) => Promise<any>)(...args),
-  });
+// Redis has been removed — these limiters use express-rate-limit's built-in
+// in-memory MemoryStore. Counters are per-process (each instance tracks its
+// own), which is sufficient for coarse abuse protection.
 
 // Baseline abuse guard for every /api request.
 export const apiRateLimit = rateLimit({
@@ -14,7 +10,6 @@ export const apiRateLimit = rateLimit({
   limit: 100,
   standardHeaders: true,
   legacyHeaders: false,
-  store: redisStore("rl:api:"),
   message: { success: false, message: "Too many requests. Please try again shortly." },
 });
 
@@ -25,7 +20,6 @@ export const authRateLimit = rateLimit({
   limit: 10,
   standardHeaders: true,
   legacyHeaders: false,
-  store: redisStore("rl:auth:"),
   message: {
     success: false,
     message: "Too many attempts. Please try again in a few minutes.",
@@ -38,7 +32,6 @@ export const contactRateLimit = rateLimit({
   limit: 5, // Allow 5 submissions per hour per IP
   standardHeaders: true,
   legacyHeaders: false,
-  store: redisStore("rl:contact:"),
   message: {
     success: false,
     message: "You have submitted too many requests. Please wait an hour before trying again.",

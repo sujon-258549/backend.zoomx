@@ -13,7 +13,8 @@
     "build": "tsc",
     "create-module": "npx ts-node src/scripts/createModule.ts",
     "seed:media": "ts-node src/app/db/seedMedia.ts",
-    "seed:user": "ts-node src/app/db/seed.ts"
+    "seed:user": "ts-node src/app/db/seed.ts",
+    "seed:case-studies": "ts-node src/app/db/seedCaseStudy.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1080.0",

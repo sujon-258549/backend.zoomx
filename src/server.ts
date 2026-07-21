@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 import app from "./app";
 import config from "./app/config";
 import seedAdmin from "./app/db/seed";
-import redis from "./app/shared/redis";
 import { initSocket } from "./app/socket";
 
 
@@ -25,14 +24,8 @@ async function connectToDatabase() {
 function gracefulShutdown(signal: string) {
   console.log(`Received ${signal}. Closing server...`);
   if (server) {
-    server.close(async () => {
+    server.close(() => {
       console.log("Server closed gracefully");
-      try {
-        await redis.quit();
-        console.log("Redis connection closed");
-      } catch (err) {
-        console.error("Error closing Redis:", err);
-      }
       process.exit(0);
     });
   } else {

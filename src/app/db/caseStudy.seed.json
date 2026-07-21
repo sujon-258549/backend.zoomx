@@ -1,0 +1,734 @@
+[
+  {
+    "index": "01",
+    "slug": "spencer-pawliw-coaching",
+    "quote": {
+      "lead": "Built a Shorts pipeline that turned a tiny audience",
+      "punch": "into a 7-figure coaching engine in 90 days"
+    },
+    "author": {
+      "name": "Spencer Pawliw",
+      "role": "Coaching",
+      "avatar": "https://i.pravatar.cc/80?img=12"
+    },
+    "stats": [
+      {
+        "value": "+250%",
+        "label": "Revenue Growth"
+      },
+      {
+        "value": "$350K",
+        "label": "Monthly Revenue"
+      }
+    ],
+    "file_type": "video",
+    "video_url": "/video/intro_video.mp4",
+    "details": {
+      "tags": [
+        {
+          "label": "Coaching",
+          "icon": "Briefcase"
+        },
+        {
+          "label": "YouTube Shorts",
+          "icon": "Video"
+        },
+        {
+          "label": "90 Days",
+          "icon": "CalendarClock"
+        },
+        {
+          "label": "More",
+          "icon": "MoreHorizontal"
+        }
+      ],
+      "hero": {
+        "videoSrc": "/video/intro_video.mp4",
+        "eyebrow": "Case Study 01 — Coaching",
+        "titleGradient": "From 5,000 subs",
+        "titleWhite": "To $350K / Month",
+        "description": "How we packaged a stalled coaching brand into a Shorts engine that paid for itself in the first 30 days."
+      },
+      "challenges": {
+        "eyebrow": "Problem",
+        "title": "A great offer, no distribution",
+        "summary": "Spencer had a proven coaching curriculum and a tiny, hard-won audience — but no system to turn either into reach.",
+        "items": [
+          {
+            "title": "Stuck at 5K subscribers for two years",
+            "description": "Long-form uploads were inconsistent and the channel never broke past a loyal core that already paid."
+          },
+          {
+            "title": "Every Reel started from scratch",
+            "description": "No hook library, no template, no review loop — each post was a one-off lottery ticket."
+          },
+          {
+            "title": "Ad spend was the only growth lever",
+            "description": "Paid acquisition was carrying the entire pipeline, and the CAC kept climbing month-over-month."
+          }
+        ]
+      },
+      "solutions": {
+        "eyebrow": "Solution",
+        "title": "A Shorts pipeline with a daily heartbeat",
+        "summary": "We replaced ad-hoc content with a repeatable pipeline — hooks, edits, captions, and review running on the same clock every week.",
+        "items": [
+          {
+            "title": "Hook-first scripting framework",
+            "description": "Twelve proven opening patterns, mapped to coaching pain points, that the editing team could pull from on day one."
+          },
+          {
+            "title": "Five-Reel-a-week production rhythm",
+            "description": "A two-editor rotation with structured review windows, so cadence never slipped — even on launch weeks."
+          },
+          {
+            "title": "Lead-capture funnel under every post",
+            "description": "Every Reel ended on a clear next step — a free workshop opt-in that fed the coaching offer directly."
+          }
+        ]
+      },
+      "growth": {
+        "eyebrow": "Growth",
+        "title": "From break-even to a 7-figure coaching engine",
+        "summary": "Inside 90 days the channel went from a side project to the single largest source of qualified leads in the business.",
+        "stats": [
+          {
+            "value": "+250%",
+            "label": "Revenue Growth"
+          },
+          {
+            "value": "$350K",
+            "label": "Monthly Revenue"
+          },
+          {
+            "value": "12x",
+            "label": "Inbound Leads"
+          },
+          {
+            "value": "−42%",
+            "label": "Paid CAC"
+          }
+        ]
+      },
+      "cta": {
+        "eyebrow": "Your Turn",
+        "titleGradient": "Want This Kind",
+        "titleWhite": "Of Growth?",
+        "description": "Tell us the offer, the channel, and the bottleneck. We will show you exactly how we would build it."
+      }
+    },
+    "status": true,
+    "isFeatured": true,
+    "serial_no": 1
+  },
+  {
+    "index": "02",
+    "slug": "northwind-apparel-ecommerce",
+    "quote": {
+      "lead": "Replaced paid social with a relentless organic Reel cadence",
+      "punch": "same volume, half the CAC"
+    },
+    "author": {
+      "name": "Northwind Apparel",
+      "role": "E-commerce",
+      "avatar": "https://i.pravatar.cc/80?img=33"
+    },
+    "stats": [
+      {
+        "value": "-52%",
+        "label": "Ad Spend"
+      },
+      {
+        "value": "3.4M",
+        "label": "Organic Views"
+      }
+    ],
+    "file_type": "video",
+    "video_url": "/video/intro_video.mp4",
+    "details": {
+      "tags": [
+        {
+          "label": "E-commerce",
+          "icon": "ShoppingBag"
+        },
+        {
+          "label": "Reels",
+          "icon": "Film"
+        },
+        {
+          "label": "6 Months",
+          "icon": "CalendarClock"
+        },
+        {
+          "label": "More",
+          "icon": "MoreHorizontal"
+        }
+      ],
+      "hero": {
+        "videoSrc": "/video/intro_video.mp4",
+        "eyebrow": "Case Study 02 — E-commerce",
+        "titleGradient": "Cut Ad Spend In Half,",
+        "titleWhite": "Kept The Volume",
+        "description": "How a fast-growing apparel brand replaced a paid-heavy funnel with an organic Reels engine — without losing a single conversion."
+      },
+      "challenges": {
+        "eyebrow": "Problem",
+        "title": "Margins disappearing into the ad account",
+        "summary": "Northwind had product-market fit, but every new dollar of revenue was being spent on Meta — and the iOS update was making it worse.",
+        "items": [
+          {
+            "title": "Rising CAC eating the margin",
+            "description": "Cost per acquired customer had climbed nearly 60% in twelve months, and the team was running out of room to absorb it."
+          },
+          {
+            "title": "Organic channels barely existed",
+            "description": "The Instagram grid was lifestyle photos, nothing was happening on Reels, and TikTok was empty."
+          },
+          {
+            "title": "No system for repurposing UGC",
+            "description": "Plenty of creator footage was coming in — it was sitting in folders no one was editing into anything."
+          }
+        ]
+      },
+      "solutions": {
+        "eyebrow": "Solution",
+        "title": "An organic-first content stack",
+        "summary": "We built a UGC-driven Reel system that funneled into product pages, and used the paid budget to amplify only what worked organically.",
+        "items": [
+          {
+            "title": "UGC editing playbook",
+            "description": "A standard treatment for every creator drop — hook, demo, social proof, CTA — so each clip became three Reels."
+          },
+          {
+            "title": "Daily Reel cadence across two channels",
+            "description": "IG and TikTok publishing 1+ Reels per day, each with a platform-specific re-edit, captions, and trend audio."
+          },
+          {
+            "title": "Whitelist amplification instead of cold ads",
+            "description": "Only Reels that broke the organic threshold were boosted, so ad spend rode the back of free reach."
+          }
+        ]
+      },
+      "growth": {
+        "eyebrow": "Growth",
+        "title": "Same revenue, half the spend",
+        "summary": "Six months in, organic was the dominant source of new customers and the ad account was a multiplier — not the engine.",
+        "stats": [
+          {
+            "value": "−52%",
+            "label": "Ad Spend"
+          },
+          {
+            "value": "3.4M",
+            "label": "Organic Views"
+          },
+          {
+            "value": "+38%",
+            "label": "AOV"
+          },
+          {
+            "value": "+2.1x",
+            "label": "ROAS"
+          }
+        ]
+      },
+      "cta": {
+        "eyebrow": "Your Turn",
+        "titleGradient": "Tired Of Burning",
+        "titleWhite": "On Paid?",
+        "description": "Let us audit your funnel and show you what an organic-first content engine would look like for your brand."
+      }
+    },
+    "status": true,
+    "isFeatured": false,
+    "serial_no": 2
+  },
+  {
+    "index": "03",
+    "slug": "linear-studio-saas",
+    "quote": {
+      "lead": "Daily founder-led shorts and demos",
+      "punch": "built a community around a brand-new dev tool"
+    },
+    "author": {
+      "name": "Linear Studio",
+      "role": "SaaS",
+      "avatar": "https://i.pravatar.cc/80?img=15"
+    },
+    "stats": [
+      {
+        "value": "+80K",
+        "label": "New Followers"
+      },
+      {
+        "value": "12x",
+        "label": "Inbound Demos"
+      }
+    ],
+    "file_type": "video",
+    "video_url": "/video/intro_video.mp4",
+    "details": {
+      "tags": [
+        {
+          "label": "SaaS",
+          "icon": "Cpu"
+        },
+        {
+          "label": "Founder-led",
+          "icon": "Mic"
+        },
+        {
+          "label": "Demos",
+          "icon": "Video"
+        },
+        {
+          "label": "More",
+          "icon": "MoreHorizontal"
+        }
+      ],
+      "hero": {
+        "videoSrc": "/video/intro_video.mp4",
+        "eyebrow": "Case Study 03 — SaaS",
+        "titleGradient": "From Launch Week",
+        "titleWhite": "To A Real Community",
+        "description": "How a new developer tool turned founder-led video into the single highest-converting top-of-funnel channel in the business."
+      },
+      "challenges": {
+        "eyebrow": "Problem",
+        "title": "Great product, invisible launch",
+        "summary": "Linear Studio shipped, did well on Product Hunt, then went quiet — there was no system to turn weekly product progress into ongoing reach.",
+        "items": [
+          {
+            "title": "Founder camera-shy on social",
+            "description": "Brilliant on a podcast, frozen on Reels — there was no structure that made on-camera predictable."
+          },
+          {
+            "title": "Product updates buried in changelogs",
+            "description": "Every shipped feature was a story no one outside the team ever heard, because nobody was editing them into videos."
+          },
+          {
+            "title": "Demos were one-offs, never repurposed",
+            "description": "Sales demos lived inside Loom, never made it to YouTube, and certainly never became Shorts."
+          }
+        ]
+      },
+      "solutions": {
+        "eyebrow": "Solution",
+        "title": "A founder-led short-form engine",
+        "summary": "We built a calm, predictable production loop that turned the founder's weekly product work into daily content — without burning him out.",
+        "items": [
+          {
+            "title": "One-hour-a-week founder shoot",
+            "description": "A tight scripted block once a week that produced 5+ Shorts and a flagship long-form drop."
+          },
+          {
+            "title": "Demo-to-short pipeline",
+            "description": "Every sales demo recorded, mined for the best 30 seconds, and re-edited as standalone Shorts."
+          },
+          {
+            "title": "Community-led feedback loop",
+            "description": "We surfaced top comments back into the next week's scripts, so the audience felt heard inside the content itself."
+          }
+        ]
+      },
+      "growth": {
+        "eyebrow": "Growth",
+        "title": "An audience that compounds into pipeline",
+        "summary": "Demo bookings, free-trial signups, and warm inbound now ride on top of a self-reinforcing video flywheel.",
+        "stats": [
+          {
+            "value": "+80K",
+            "label": "New Followers"
+          },
+          {
+            "value": "12x",
+            "label": "Inbound Demos"
+          },
+          {
+            "value": "+3.8x",
+            "label": "Trial Signups"
+          },
+          {
+            "value": "<1d",
+            "label": "Idea-To-Ship"
+          }
+        ]
+      },
+      "cta": {
+        "eyebrow": "Your Turn",
+        "titleGradient": "Want A SaaS",
+        "titleWhite": "Content Engine?",
+        "description": "We will run a free audit on your founder content and map out exactly what the next 90 days could look like."
+      }
+    },
+    "status": true,
+    "isFeatured": false,
+    "serial_no": 3
+  },
+  {
+    "index": "04",
+    "slug": "nick-barner-creator",
+    "quote": {
+      "lead": "Restructured the format and doubled the cadence,",
+      "punch": "turning a vlog channel into a 7-figure brand"
+    },
+    "author": {
+      "name": "Nick Barner",
+      "role": "Creator",
+      "avatar": "https://i.pravatar.cc/80?img=51"
+    },
+    "stats": [
+      {
+        "value": "+4x",
+        "label": "Watch Time"
+      },
+      {
+        "value": "$1.2M",
+        "label": "Annual ARR"
+      }
+    ],
+    "file_type": "video",
+    "video_url": "/video/intro_video.mp4",
+    "details": {
+      "tags": [
+        {
+          "label": "Creator",
+          "icon": "Sparkles"
+        },
+        {
+          "label": "YouTube",
+          "icon": "Video"
+        },
+        {
+          "label": "Long-form",
+          "icon": "Clapperboard"
+        },
+        {
+          "label": "More",
+          "icon": "MoreHorizontal"
+        }
+      ],
+      "hero": {
+        "videoSrc": "/video/intro_video.mp4",
+        "eyebrow": "Case Study 04 — Creator",
+        "titleGradient": "From Vlog Channel",
+        "titleWhite": "To 7-Figure Brand",
+        "description": "How a creator-led channel doubled cadence, restructured every video around retention, and turned an audience into a real business."
+      },
+      "challenges": {
+        "eyebrow": "Problem",
+        "title": "Loyal audience, flat revenue",
+        "summary": "Nick had a die-hard fanbase but the channel had plateaued — uploads were inconsistent and monetization barely moved with view count.",
+        "items": [
+          {
+            "title": "Watch time collapsing after the intro",
+            "description": "The first 60 seconds were doing all the work, and retention was falling off a cliff before the value hit."
+          },
+          {
+            "title": "One video every two weeks",
+            "description": "Cadence kept slipping because the workflow was held together by a single editor and a single overworked founder."
+          },
+          {
+            "title": "No funnel beyond AdSense",
+            "description": "Every view monetized at the platform rate — there was no owned product capturing the most engaged viewers."
+          }
+        ]
+      },
+      "solutions": {
+        "eyebrow": "Solution",
+        "title": "Format-led, weekly, monetized",
+        "summary": "We rebuilt the channel around a retention-first format and connected every video to an owned-funnel monetization layer.",
+        "items": [
+          {
+            "title": "Retention-first format rewrite",
+            "description": "Hook, payoff loop, mid-roll re-hook, satisfying close — applied to every long-form upload."
+          },
+          {
+            "title": "Weekly upload cadence, twice over",
+            "description": "Two editors in rotation plus a thumbnail specialist meant Nick never edited again — he just shot and reviewed."
+          },
+          {
+            "title": "Owned-product funnel below every video",
+            "description": "A creator product positioned in the first comment and pinned link, fed by a custom landing experience."
+          }
+        ]
+      },
+      "growth": {
+        "eyebrow": "Growth",
+        "title": "A real business behind the channel",
+        "summary": "Watch time quadrupled, ARR crossed seven figures, and the channel stopped depending on AdSense to be a viable business.",
+        "stats": [
+          {
+            "value": "+4x",
+            "label": "Watch Time"
+          },
+          {
+            "value": "$1.2M",
+            "label": "Annual ARR"
+          },
+          {
+            "value": "2x",
+            "label": "Upload Cadence"
+          },
+          {
+            "value": "+62%",
+            "label": "CTR"
+          }
+        ]
+      },
+      "cta": {
+        "eyebrow": "Your Turn",
+        "titleGradient": "Ready To Turn Views",
+        "titleWhite": "Into A Business?",
+        "description": "Tell us the channel and the offer — we will map out exactly what to change, in what order, to ship a creator business behind it."
+      }
+    },
+    "status": true,
+    "isFeatured": false,
+    "serial_no": 4
+  },
+  {
+    "index": "05",
+    "slug": "pillar-creative-agency",
+    "quote": {
+      "lead": "Designed a studio workflow that lets a 4-person team",
+      "punch": "ship 100+ Reels every month, on brand"
+    },
+    "author": {
+      "name": "Pillar Creative",
+      "role": "Agency",
+      "avatar": "https://i.pravatar.cc/80?img=68"
+    },
+    "stats": [
+      {
+        "value": "100+",
+        "label": "Reels / Month"
+      },
+      {
+        "value": "-38%",
+        "label": "Edit Time"
+      }
+    ],
+    "file_type": "video",
+    "video_url": "/video/intro_video.mp4",
+    "details": {
+      "tags": [
+        {
+          "label": "Agency",
+          "icon": "Building2"
+        },
+        {
+          "label": "Workflow",
+          "icon": "Workflow"
+        },
+        {
+          "label": "Volume",
+          "icon": "Layers"
+        },
+        {
+          "label": "More",
+          "icon": "MoreHorizontal"
+        }
+      ],
+      "hero": {
+        "videoSrc": "/video/intro_video.mp4",
+        "eyebrow": "Case Study 05 — Agency",
+        "titleGradient": "A Studio Workflow",
+        "titleWhite": "That Actually Scales",
+        "description": "How a four-person editing studio went from 30 deliverables a month to 100+ on-brand Reels — without hiring a single new editor."
+      },
+      "challenges": {
+        "eyebrow": "Problem",
+        "title": "Volume capped by chaos, not capacity",
+        "summary": "Pillar's editors were good, but the studio was held together by Slack and willpower — every new client felt like an existential threat.",
+        "items": [
+          {
+            "title": "No shared editing standards",
+            "description": "Every editor delivered slightly differently, and revisions multiplied because there was nothing to point a junior editor at."
+          },
+          {
+            "title": "Review feedback scattered across tools",
+            "description": "Comments lived in Loom, in Slack, in Drive, in emails — nothing tracked which round of revision a project was actually on."
+          },
+          {
+            "title": "Project ingest by memory",
+            "description": "There was no system for tagging selects, b-roll, or graphics — every project re-built the same assets from scratch."
+          }
+        ]
+      },
+      "solutions": {
+        "eyebrow": "Solution",
+        "title": "A studio OS in 30 days",
+        "summary": "We rebuilt Pillar's pipeline around a single source of truth for projects, review, and assets — then trained the team to lean on it.",
+        "items": [
+          {
+            "title": "Editing standards manual",
+            "description": "Brand kits, captions, sound design, and motion baselines documented so any editor could pick up any project."
+          },
+          {
+            "title": "Frame.io-first review loop",
+            "description": "All client feedback funneled into a single tool with clear revision rounds — endless revision spirals went away."
+          },
+          {
+            "title": "Tagged, searchable asset library",
+            "description": "Selects, b-roll, and graphics indexed across projects so the studio compounded its own footage instead of starting cold."
+          }
+        ]
+      },
+      "growth": {
+        "eyebrow": "Growth",
+        "title": "Triple the output, same four editors",
+        "summary": "The studio ships 3x the volume with the same headcount, the on-call founder no longer touches the timeline, and clients keep their retainer.",
+        "stats": [
+          {
+            "value": "100+",
+            "label": "Reels / Month"
+          },
+          {
+            "value": "−38%",
+            "label": "Edit Time"
+          },
+          {
+            "value": "−66%",
+            "label": "Revision Rounds"
+          },
+          {
+            "value": "0",
+            "label": "New Hires Needed"
+          }
+        ]
+      },
+      "cta": {
+        "eyebrow": "Your Turn",
+        "titleGradient": "Want A Studio",
+        "titleWhite": "That Scales?",
+        "description": "Send us your current workflow and we will tell you the three changes that would unlock the next 3x of volume — without hiring."
+      }
+    },
+    "status": true,
+    "isFeatured": false,
+    "serial_no": 5
+  },
+  {
+    "index": "06",
+    "slug": "inside-out-health-fitness",
+    "quote": {
+      "lead": "Repositioned the hook formula and launched a Shorts-first calendar",
+      "punch": "that compounded into 500K monthly views"
+    },
+    "author": {
+      "name": "Inside Out Health",
+      "role": "Fitness",
+      "avatar": "https://i.pravatar.cc/80?img=47"
+    },
+    "stats": [
+      {
+        "value": "500K",
+        "label": "Monthly Views"
+      },
+      {
+        "value": "+9x",
+        "label": "Lead Capture"
+      }
+    ],
+    "file_type": "video",
+    "video_url": "/video/intro_video.mp4",
+    "details": {
+      "tags": [
+        {
+          "label": "Fitness",
+          "icon": "Dumbbell"
+        },
+        {
+          "label": "Shorts-first",
+          "icon": "Video"
+        },
+        {
+          "label": "Lead-gen",
+          "icon": "MagnetIcon"
+        },
+        {
+          "label": "More",
+          "icon": "MoreHorizontal"
+        }
+      ],
+      "hero": {
+        "videoSrc": "/video/intro_video.mp4",
+        "eyebrow": "Case Study 06 — Fitness",
+        "titleGradient": "From Flatlined Reach",
+        "titleWhite": "To 500K Monthly Views",
+        "description": "How a fitness brand repositioned its hook formula and launched a Shorts-first calendar that compounded month over month."
+      },
+      "challenges": {
+        "eyebrow": "Problem",
+        "title": "Authority, no reach",
+        "summary": "Inside Out had elite practitioners and a small, devoted following — but their hooks were textbook and their reach had been flat for a year.",
+        "items": [
+          {
+            "title": "Hooks led with credentials, not pain",
+            "description": "Every video opened with what the brand wanted to say, not what the viewer was actually scrolling past."
+          },
+          {
+            "title": "No publishing calendar",
+            "description": "Posts went up when someone remembered — there was no consistent surface for the algorithm to learn from."
+          },
+          {
+            "title": "Lead capture was an afterthought",
+            "description": "Even when a video popped, the funnel underneath it converted at almost nothing."
+          }
+        ]
+      },
+      "solutions": {
+        "eyebrow": "Solution",
+        "title": "A Shorts-first content engine",
+        "summary": "We rewrote the hook formula around viewer pain, locked the calendar to a predictable rhythm, and built a real lead-capture layer beneath it.",
+        "items": [
+          {
+            "title": "Pain-led hook formula",
+            "description": "Eight repeatable opening patterns, each tied to a specific health pain point, that anyone on the team could write to."
+          },
+          {
+            "title": "Locked Shorts-first calendar",
+            "description": "Daily Shorts, a weekly long-form deep dive, and a fixed publish window — so the algorithm could finally learn the channel."
+          },
+          {
+            "title": "Lead-magnet ladder below every post",
+            "description": "Every Short pointed to a tight free resource that fed into the paid offer — measured weekly, tuned monthly."
+          }
+        ]
+      },
+      "growth": {
+        "eyebrow": "Growth",
+        "title": "Reach that compounds, leads that convert",
+        "summary": "Monthly views crossed 500K inside two quarters, the lead pipeline grew nearly 10x, and the team finally had a content engine they could plan around.",
+        "stats": [
+          {
+            "value": "500K",
+            "label": "Monthly Views"
+          },
+          {
+            "value": "+9x",
+            "label": "Lead Capture"
+          },
+          {
+            "value": "+220%",
+            "label": "Saved Posts"
+          },
+          {
+            "value": "+1.6x",
+            "label": "Conversion Rate"
+          }
+        ]
+      },
+      "cta": {
+        "eyebrow": "Your Turn",
+        "titleGradient": "Ready For Reach",
+        "titleWhite": "That Compounds?",
+        "description": "Send over your last 30 days of content — we will pull the hooks apart and show you exactly what to change first."
+      }
+    },
+    "status": true,
+    "isFeatured": false,
+    "serial_no": 6
+  }
+]

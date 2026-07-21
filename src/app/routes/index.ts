@@ -4,6 +4,8 @@ import { ActionLogRoutes } from "../modules/actionLog/actionLog.route";
 import { AuthRoutes } from "../modules/auth/auth.routes";
 import { BlogRoutes } from "../modules/blog/blog.routes";
 import { BrandRoutes } from "../modules/brands/brands.routes";
+import { CaseStudyRoutes } from "../modules/caseStudy/caseStudy.routes";
+import { CaseStudyCategoryRoutes } from "../modules/caseStudyCategory/caseStudyCategory.routes";
 import { CategoryRoutes } from "../modules/category/category.route";
 import { CountryRoutes } from "../modules/country/country.routes";
 import { DashboardRoutes } from "../modules/dashboard/dashboard.routes";
@@ -60,6 +62,14 @@ const moduleRoutes = [
   {
     path: "/blogs",
     route: BlogRoutes,
+  },
+  {
+    path: "/case-studies",
+    route: CaseStudyRoutes,
+  },
+  {
+    path: "/case-study-categories",
+    route: CaseStudyCategoryRoutes,
   },
   {
     path: "/action-logs",

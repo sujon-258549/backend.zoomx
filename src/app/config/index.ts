@@ -33,7 +33,6 @@ export default {
   jwt_pass_reset_expires_in: process.env.JWT_PASS_RESET_EXPIRES_IN,
   sender_email: process.env.SENDER_EMAIL,
   sender_app_password: process.env.SENDER_APP_PASS,
-  redis_url: process.env.REDIS_URL || "redis://localhost:6379",
   admin_email: process.env.ADMIN_EMAIL,
   admin_password: process.env.ADMIN_PASSWORD,
   admin_name: process.env.ADMIN_NAME,
