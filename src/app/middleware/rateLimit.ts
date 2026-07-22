@@ -4,10 +4,14 @@ import rateLimit from "express-rate-limit";
 // in-memory MemoryStore. Counters are per-process (each instance tracks its
 // own), which is sufficient for coarse abuse protection.
 
-// Baseline abuse guard for every /api request.
+// Baseline abuse guard for every /api request. A single SSR page render fans
+// out into many API reads, so the ceiling is generous — and much higher in dev
+// where Next.js issues duplicate/fast-refresh requests.
+const isProduction = process.env.NODE_ENV === "production";
+
 export const apiRateLimit = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  limit: 100,
+  limit: isProduction ? 600 : 5000,
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: "Too many requests. Please try again shortly." },
