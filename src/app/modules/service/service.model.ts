@@ -34,6 +34,43 @@ const detailsSchema = new Schema(
   { _id: false }
 );
 
+const logoSchema = new Schema(
+  {
+    name: { type: String, trim: true },
+    src: { type: String, trim: true },
+  },
+  { _id: false }
+);
+
+const trustedBrandsSchema = new Schema(
+  {
+    eyebrow: { type: String, trim: true },
+    titleGradient: { type: String, trim: true },
+    titleWhite: { type: String, trim: true },
+    logos: { type: [logoSchema], default: [] },
+  },
+  { _id: false }
+);
+
+const galleryVideoSchema = new Schema(
+  {
+    id: { type: String, trim: true },
+    title: { type: String, trim: true },
+    thumbnail: { type: String, trim: true },
+  },
+  { _id: false }
+);
+
+const gallerySchema = new Schema(
+  {
+    eyebrow: { type: String, trim: true },
+    titleGradient: { type: String, trim: true },
+    titleWhite: { type: String, trim: true },
+    videos: { type: [galleryVideoSchema], default: [] },
+  },
+  { _id: false }
+);
+
 const serviceSchema = new Schema<IService>(
   {
     name: { type: String, required: true, trim: true },
@@ -53,7 +90,9 @@ const serviceSchema = new Schema<IService>(
       index: true,
     },
     hero: { type: heroSchema, default: undefined },
+    trustedBrands: { type: trustedBrandsSchema, default: undefined },
     details: { type: detailsSchema, default: undefined },
+    gallery: { type: gallerySchema, default: undefined },
 
     status: { type: Boolean, default: false },
     isFeatured: { type: Boolean, default: false, index: true },

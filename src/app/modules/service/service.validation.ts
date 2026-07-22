@@ -23,6 +23,31 @@ const details = z.object({
   body: z.string().optional(),
 });
 
+const logo = z.object({
+  name: z.string().optional(),
+  src: z.string().optional(),
+});
+
+const trustedBrands = z.object({
+  eyebrow: z.string().optional(),
+  titleGradient: z.string().optional(),
+  titleWhite: z.string().optional(),
+  logos: z.array(logo).optional(),
+});
+
+const galleryVideo = z.object({
+  id: z.string().optional(),
+  title: z.string().optional(),
+  thumbnail: z.string().optional(),
+});
+
+const gallery = z.object({
+  eyebrow: z.string().optional(),
+  titleGradient: z.string().optional(),
+  titleWhite: z.string().optional(),
+  videos: z.array(galleryVideo).optional(),
+});
+
 const create = z.object({
   body: z.object({
     name: z.string().min(1, "Service name is required"),
@@ -31,7 +56,9 @@ const create = z.object({
     cardImages: z.array(z.string()).optional(),
     categoryIds: z.array(z.string()).optional(),
     hero: hero.optional(),
+    trustedBrands: trustedBrands.optional(),
     details: details.optional(),
+    gallery: gallery.optional(),
     status: z.boolean().optional(),
     isFeatured: z.boolean().optional(),
     serial_no: z.number().int().nonnegative().optional(),
@@ -47,7 +74,9 @@ const update = z.object({
     cardImages: z.array(z.string()).optional(),
     categoryIds: z.array(z.string()).optional(),
     hero: hero.optional(),
+    trustedBrands: trustedBrands.optional(),
     details: details.optional(),
+    gallery: gallery.optional(),
     status: z.boolean().optional(),
     isFeatured: z.boolean().optional(),
     serial_no: z.number().int().nonnegative().optional(),

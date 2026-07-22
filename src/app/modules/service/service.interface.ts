@@ -24,6 +24,32 @@ export interface IServiceDetails {
   body?: string;
 }
 
+export interface IServiceLogo {
+  name?: string;
+  src?: string;
+}
+
+export interface IServiceTrustedBrands {
+  eyebrow?: string;
+  titleGradient?: string;
+  titleWhite?: string;
+  logos?: IServiceLogo[];
+}
+
+export interface IServiceGalleryVideo {
+  /** YouTube video id (played in the lightbox). */
+  id?: string;
+  title?: string;
+  thumbnail?: string;
+}
+
+export interface IServiceGallery {
+  eyebrow?: string;
+  titleGradient?: string;
+  titleWhite?: string;
+  videos?: IServiceGalleryVideo[];
+}
+
 export interface IService {
   _id?: string;
   /** Service name — used for the list, nav tab and card. */
@@ -36,7 +62,9 @@ export interface IService {
   /** Multi-category — refs the ServiceCategory collection. */
   categoryIds?: (Types.ObjectId | string)[];
   hero?: IServiceHero;
+  trustedBrands?: IServiceTrustedBrands;
   details?: IServiceDetails;
+  gallery?: IServiceGallery;
 
   /** Published/visible on the public site. */
   status: boolean;
