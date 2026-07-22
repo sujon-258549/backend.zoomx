@@ -29,6 +29,7 @@ import { UserRoutes } from "../modules/user/user.routes";
 import { DynamicContentRoutes } from "../modules/dynamicContent/dynamicContent.route";
 import { ProjectCategoryRoutes } from "../modules/projectCategory/projectCategory.routes";
 import { ProjectRoutes } from "../modules/project/project.routes";
+import { ReviewRoutes } from "../modules/review/review.routes";
 
 const router = Router();
 
@@ -148,6 +149,10 @@ const moduleRoutes = [
   {
     path: "/projects",
     route: ProjectRoutes,
+  },
+  {
+    path: "/reviews",
+    route: ReviewRoutes,
   },
   {
     path: "/project-categories",
