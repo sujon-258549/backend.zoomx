@@ -11,23 +11,6 @@ const adminAuth = auth();
 router.get("/overview", adminAuth, DashboardControllers.getOverview);
 router.get("/stats", adminAuth, DashboardControllers.getStats);
 router.get(
-  "/revenue-summary",
-  adminAuth,
-  DashboardControllers.getRevenueSummary
-);
-router.get("/order-status", adminAuth, DashboardControllers.getOrderStatus);
-router.get(
-  "/monthly-performance",
-  adminAuth,
-  DashboardControllers.getMonthlyPerformance
-);
-router.get("/top-products", adminAuth, DashboardControllers.getTopProducts);
-router.get(
-  "/recent-orders",
-  adminAuth,
-  DashboardControllers.getRecentOrders
-);
-router.get(
   "/traffic-sources",
   adminAuth,
   DashboardControllers.getTrafficSources

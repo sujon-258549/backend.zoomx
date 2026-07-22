@@ -7,7 +7,6 @@ import sharp from "sharp";
 import AppError from "../../errors/appError";
 import { withCache } from "../../shared/redis";
 import { Category } from "../category/category.model";
-import { Product } from "../product/product.model";
 import Brand from "../brands/brands.model";
 import { Blog } from "../blog/blog.model";
 import { DynamicContent } from "../dynamicContent/dynamicContent.model";
@@ -430,11 +429,6 @@ const getMediaUsage = async (id: string) => {
   const usage: Array<{ type: string; name: string; id: string; url?: string }> = [];
 
   // 1. Check schemas that store ObjectId
-  const products = await Product.find({
-    $or: [{ thumbnailId: id }, { galleryIds: id }]
-  }).select('name _id').lean();
-  products.forEach(p => usage.push({ type: 'Product', name: p.name, id: p._id.toString(), url: `/products/edit/${p._id}` }));
-
   const categories = await Category.find({
     $or: [
       { imageId: id },

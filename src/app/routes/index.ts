@@ -27,10 +27,6 @@ import { TeamMemberRoutes } from "../modules/teamMember/teamMember.routes";
 import { TeamMemberContactRoutes } from "../modules/teamMemberContact/teamMemberContact.routes";
 import { UserRoutes } from "../modules/user/user.routes";
 import { DynamicContentRoutes } from "../modules/dynamicContent/dynamicContent.route";
-import { ProductRoutes } from "../modules/product/product.routes";
-import { ShippingMethodRoutes } from "../modules/shipping-method/shipping-method.route";
-import { OrderRoutes } from "../modules/order/order.route";
-import { ProductReviewRoutes } from "../modules/productReview/productReview.routes";
 import { ProjectCategoryRoutes } from "../modules/projectCategory/projectCategory.routes";
 import { ProjectRoutes } from "../modules/project/project.routes";
 
@@ -98,18 +94,6 @@ const moduleRoutes = [
     route: CategoryRoutes,
   },
   {
-    path: "/products",
-    route: ProductRoutes,
-  },
-  {
-    path: "/shipping-methods",
-    route: ShippingMethodRoutes,
-  },
-  {
-    path: "/orders",
-    route: OrderRoutes,
-  },
-  {
     path: "/sitemap",
     route: SitemapRoutes,
   },
@@ -160,10 +144,6 @@ const moduleRoutes = [
   {
     path: "/comments",
     route: CommentRoutes,
-  },
-  {
-    path: "/product-reviews",
-    route: ProductReviewRoutes,
   },
   {
     path: "/projects",

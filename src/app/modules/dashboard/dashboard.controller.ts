@@ -24,58 +24,6 @@ const getStats = catchAsync(async (_req: Request, res: Response) => {
   });
 });
 
-const getRevenueSummary = catchAsync(async (_req: Request, res: Response) => {
-  const result = await DashboardServices.buildRevenueSummary();
-  sendResponse(res, {
-    statusCode: StatusCodes.OK,
-    success: true,
-    message: "Revenue summary fetched successfully",
-    data: result,
-  });
-});
-
-const getOrderStatus = catchAsync(async (_req: Request, res: Response) => {
-  const result = await DashboardServices.buildOrderStatus();
-  sendResponse(res, {
-    statusCode: StatusCodes.OK,
-    success: true,
-    message: "Order status breakdown fetched successfully",
-    data: result,
-  });
-});
-
-const getMonthlyPerformance = catchAsync(
-  async (_req: Request, res: Response) => {
-    const result = await DashboardServices.buildMonthlyPerformance();
-    sendResponse(res, {
-      statusCode: StatusCodes.OK,
-      success: true,
-      message: "Monthly performance fetched successfully",
-      data: result,
-    });
-  }
-);
-
-const getTopProducts = catchAsync(async (_req: Request, res: Response) => {
-  const result = await DashboardServices.buildTopProducts();
-  sendResponse(res, {
-    statusCode: StatusCodes.OK,
-    success: true,
-    message: "Top products fetched successfully",
-    data: result,
-  });
-});
-
-const getRecentOrders = catchAsync(async (_req: Request, res: Response) => {
-  const result = await DashboardServices.buildRecentOrders();
-  sendResponse(res, {
-    statusCode: StatusCodes.OK,
-    success: true,
-    message: "Recent orders fetched successfully",
-    data: result,
-  });
-});
-
 const getTrafficSources = catchAsync(async (_req: Request, res: Response) => {
   const result = await DashboardServices.buildTrafficSources();
   sendResponse(res, {
@@ -109,11 +57,6 @@ const getQuickStats = catchAsync(async (_req: Request, res: Response) => {
 export const DashboardControllers = {
   getOverview,
   getStats,
-  getRevenueSummary,
-  getOrderStatus,
-  getMonthlyPerformance,
-  getTopProducts,
-  getRecentOrders,
   getTrafficSources,
   getWeeklyActivity,
   getQuickStats,
