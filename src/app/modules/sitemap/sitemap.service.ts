@@ -64,7 +64,7 @@ const getSitemapData = async () => {
     baseUrl,
     staticRoutes,
     blogs: mapEntries(blogs as SitemapItem[], baseUrl, "/blog"),
-    services: mapEntries(services as SitemapItem[], baseUrl, "/"),
+    services: mapEntries(services as SitemapItem[], baseUrl, "/services"),
     caseStudies: [],
     generatedAt: new Date(),
   };
