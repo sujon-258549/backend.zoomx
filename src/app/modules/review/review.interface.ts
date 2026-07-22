@@ -5,7 +5,10 @@ export interface IReview extends Document {
   name: string;
   role: string;
   avatar?: string;
+  avatarId?: import("mongoose").Types.ObjectId;
   type: "video" | "image";
   poster: string;
+  posterId?: import("mongoose").Types.ObjectId;
+  videoUrl?: string;
   order?: number;
 }

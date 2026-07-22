@@ -19,6 +19,10 @@ const reviewSchema = new Schema<IReview>(
       type: String,
       default: "",
     },
+    avatarId: {
+      type: Schema.Types.ObjectId,
+      ref: "Media",
+    },
     type: {
       type: String,
       enum: ["video", "image"],
@@ -27,6 +31,14 @@ const reviewSchema = new Schema<IReview>(
     poster: {
       type: String,
       required: true,
+    },
+    posterId: {
+      type: Schema.Types.ObjectId,
+      ref: "Media",
+    },
+    videoUrl: {
+      type: String,
+      default: "",
     },
     order: {
       type: Number,

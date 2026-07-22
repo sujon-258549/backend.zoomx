@@ -35,7 +35,7 @@ const deleteReview = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getReviews = catchAsync(async (req: Request, res: Response) => {
-  const result = await ReviewService.getReviews();
+  const result = await ReviewService.getReviews(req.query);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
