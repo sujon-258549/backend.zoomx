@@ -1,19 +1,42 @@
-import { model } from "mongoose";
+import { Schema, model } from "mongoose";
+import { IService } from "./service.interface";
 
-const mongoose = require("mongoose");
-
-/**
- * NOTE: Stub model.
- * The original `service` module was removed from this codebase, but several
- * live features still query it (dashboard stats, sitemap generation, and the
- * servicesCountry delete guard). This minimal schema exists so those imports
- * resolve and the server boots; queries simply return empty results until the
- * real Service module is restored.
- *
- * Fields below mirror only what dependent code references.
- */
-const serviceSchema = new mongoose.Schema(
+const actionSchema = new Schema(
   {
+    label: { type: String, trim: true },
+    href: { type: String, trim: true },
+  },
+  { _id: false }
+);
+
+const heroSchema = new Schema(
+  {
+    videoSrc: { type: String, trim: true },
+    eyebrow: { type: String, trim: true },
+    titleGradient: { type: String, trim: true },
+    titleWhite: { type: String, trim: true },
+    description: { type: String, trim: true },
+    primaryAction: { type: actionSchema, default: undefined },
+    secondaryAction: { type: actionSchema, default: undefined },
+  },
+  { _id: false }
+);
+
+const detailsSchema = new Schema(
+  {
+    eyebrow: { type: String, trim: true },
+    titleGradient: { type: String, trim: true },
+    titleWhite: { type: String, trim: true },
+    image: { type: String, trim: true },
+    // Rich-text HTML from the admin editor.
+    body: { type: String },
+  },
+  { _id: false }
+);
+
+const serviceSchema = new Schema<IService>(
+  {
+    name: { type: String, required: true, trim: true },
     slug: {
       type: String,
       unique: true,
@@ -21,26 +44,28 @@ const serviceSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
     },
-    // Referenced as `status: "active"` in sitemap.service.ts
-    status: {
-      type: String,
-      default: "active",
+    thumbnail: { type: String, trim: true },
+    cardImages: { type: [String], default: [] },
+    categoryIds: {
+      type: [Schema.Types.ObjectId],
+      ref: "ServiceCategory",
+      default: [],
+      index: true,
     },
-    // Referenced by servicesCountry delete guard
-    servicesCountry: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "ServicesCountry",
-      default: null,
-    },
-    is_deleted: {
-      type: Boolean,
-      default: false,
-    },
+    hero: { type: heroSchema, default: undefined },
+    details: { type: detailsSchema, default: undefined },
+
+    status: { type: Boolean, default: false },
+    isFeatured: { type: Boolean, default: false, index: true },
+    serial_no: { type: Number, default: 0, index: true },
+
+    is_deleted: { type: Boolean, default: false },
+    author_user: { type: Schema.Types.ObjectId, ref: "User", default: null },
+    last_update_by: { type: Schema.Types.ObjectId, ref: "User", default: null },
   },
-  {
-    timestamps: true,
-    versionKey: false,
-  }
+  { timestamps: true, versionKey: false }
 );
 
-export const Service = model("Service", serviceSchema);
+serviceSchema.index({ serial_no: 1, createdAt: -1 });
+
+export const Service = model<IService>("Service", serviceSchema);

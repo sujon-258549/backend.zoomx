@@ -30,6 +30,8 @@ import { DynamicContentRoutes } from "../modules/dynamicContent/dynamicContent.r
 import { ProjectCategoryRoutes } from "../modules/projectCategory/projectCategory.routes";
 import { ProjectRoutes } from "../modules/project/project.routes";
 import { ReviewRoutes } from "../modules/review/review.routes";
+import { ServiceRoutes } from "../modules/service/service.routes";
+import { ServiceCategoryRoutes } from "../modules/serviceCategory/serviceCategory.routes";
 
 const router = Router();
 
@@ -157,6 +159,14 @@ const moduleRoutes = [
   {
     path: "/project-categories",
     route: ProjectCategoryRoutes,
+  },
+  {
+    path: "/services",
+    route: ServiceRoutes,
+  },
+  {
+    path: "/service-categories",
+    route: ServiceCategoryRoutes,
   },
 ];
 

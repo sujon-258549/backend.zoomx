@@ -41,7 +41,7 @@ const getSitemapData = async () => {
       .select("slug updatedAt createdAt")
       .lean(),
     Service.find<SitemapItem>({
-      status: "active",
+      status: true,
       is_deleted: false,
     })
       .select("slug updatedAt createdAt")
