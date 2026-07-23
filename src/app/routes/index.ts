@@ -32,6 +32,8 @@ import { ProjectRoutes } from "../modules/project/project.routes";
 import { ReviewRoutes } from "../modules/review/review.routes";
 import { ServiceRoutes } from "../modules/service/service.routes";
 import { ServiceCategoryRoutes } from "../modules/serviceCategory/serviceCategory.routes";
+import { MeetingSettingRoutes } from "../modules/meetingSetting/meetingSetting.routes";
+import { MeetingRoutes } from "../modules/meeting/meeting.routes";
 
 const router = Router();
 
@@ -167,6 +169,14 @@ const moduleRoutes = [
   {
     path: "/service-categories",
     route: ServiceCategoryRoutes,
+  },
+  {
+    path: "/meeting-settings",
+    route: MeetingSettingRoutes,
+  },
+  {
+    path: "/meetings",
+    route: MeetingRoutes,
   },
 ];
 

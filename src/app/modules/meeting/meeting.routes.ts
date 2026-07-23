@@ -1,0 +1,37 @@
+import { Router } from "express";
+import auth from "../../middleware/auth";
+import checkPermission from "../../middleware/permission";
+import { contactRateLimit } from "../../middleware/rateLimit";
+import validateRequest from "../../middleware/validateRequest";
+import { MeetingControllers } from "./meeting.controller";
+import { MeetingValidation } from "./meeting.validation";
+
+const router = Router();
+
+// ── Public ──
+router.get("/slots", MeetingControllers.getSlots);
+router.post(
+  "/book",
+  contactRateLimit,
+  validateRequest(MeetingValidation.book),
+  MeetingControllers.bookMeeting
+);
+
+// ── Admin ──
+router.get("/", auth(), checkPermission("Meetings", "view"), MeetingControllers.getAllMeetings);
+router.get("/:id", auth(), checkPermission("Meetings", "view"), MeetingControllers.getMeeting);
+router.patch(
+  "/:id/status",
+  auth(),
+  checkPermission("Meetings", "update"),
+  validateRequest(MeetingValidation.updateStatus),
+  MeetingControllers.updateStatus
+);
+router.delete(
+  "/:id",
+  auth(),
+  checkPermission("Meetings", "delete"),
+  MeetingControllers.deleteMeeting
+);
+
+export const MeetingRoutes = router;
