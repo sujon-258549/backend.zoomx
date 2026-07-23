@@ -71,6 +71,111 @@ const gallerySchema = new Schema(
   { _id: false }
 );
 
+const sectionSchema = new Schema(
+  {
+    key: { type: String, trim: true, required: true },
+    visible: { type: Boolean, default: true },
+  },
+  { _id: false }
+);
+
+// ── Per-section editable content ──
+const namedItemSchema = new Schema(
+  { title: { type: String, trim: true }, description: { type: String, trim: true } },
+  { _id: false }
+);
+const statItemSchema = new Schema(
+  { value: { type: String, trim: true }, label: { type: String, trim: true } },
+  { _id: false }
+);
+const processSchema = new Schema(
+  { title1: { type: String, trim: true }, title2: { type: String, trim: true }, steps: { type: [namedItemSchema], default: [] } },
+  { _id: false }
+);
+const whyUsSchema = new Schema(
+  {
+    eyebrow: { type: String, trim: true },
+    title1: { type: String, trim: true },
+    title2: { type: String, trim: true },
+    description: { type: String, trim: true },
+    features: { type: [namedItemSchema], default: [] },
+    stats: { type: [statItemSchema], default: [] },
+  },
+  { _id: false }
+);
+const showcaseItemSchema = new Schema(
+  {
+    tag: { type: String, trim: true },
+    title: { type: String, trim: true },
+    description: { type: String, trim: true },
+    points: { type: [String], default: [] },
+    image: { type: String, trim: true },
+  },
+  { _id: false }
+);
+const showcaseSchema = new Schema(
+  { items: { type: [showcaseItemSchema], default: [] } },
+  { _id: false }
+);
+const headingListSchema = new Schema(
+  {
+    title1: { type: String, trim: true },
+    title2: { type: String, trim: true },
+    sub: { type: String, trim: true },
+    items: { type: [namedItemSchema], default: [] },
+  },
+  { _id: false }
+);
+const platformItemSchema = new Schema(
+  { name: { type: String, trim: true }, format: { type: String, trim: true }, ratio: { type: String, trim: true } },
+  { _id: false }
+);
+const platformsSchema = new Schema(
+  {
+    title1: { type: String, trim: true },
+    title2: { type: String, trim: true },
+    sub: { type: String, trim: true },
+    items: { type: [platformItemSchema], default: [] },
+  },
+  { _id: false }
+);
+const comparisonSchema = new Schema(
+  {
+    title1: { type: String, trim: true },
+    title2: { type: String, trim: true },
+    sub: { type: String, trim: true },
+    oursLabel: { type: String, trim: true },
+    othersLabel: { type: String, trim: true },
+    items: { type: [String], default: [] },
+  },
+  { _id: false }
+);
+const toolItemSchema = new Schema(
+  { name: { type: String, trim: true }, role: { type: String, trim: true } },
+  { _id: false }
+);
+const toolsSchema = new Schema(
+  {
+    title1: { type: String, trim: true },
+    title2: { type: String, trim: true },
+    sub: { type: String, trim: true },
+    items: { type: [toolItemSchema], default: [] },
+  },
+  { _id: false }
+);
+const faqItemSchema = new Schema(
+  { q: { type: String, trim: true }, a: { type: String, trim: true } },
+  { _id: false }
+);
+const faqSchema = new Schema(
+  { items: { type: [faqItemSchema], default: [] } },
+  { _id: false }
+);
+const logosSchema = new Schema(
+  { title: { type: String, trim: true }, images: { type: [String], default: [] } },
+  { _id: false }
+);
+
 const serviceSchema = new Schema<IService>(
   {
     name: { type: String, required: true, trim: true },
@@ -93,6 +198,16 @@ const serviceSchema = new Schema<IService>(
     trustedBrands: { type: trustedBrandsSchema, default: undefined },
     details: { type: detailsSchema, default: undefined },
     gallery: { type: gallerySchema, default: undefined },
+    sections: { type: [sectionSchema], default: [] },
+    logos: { type: logosSchema, default: undefined },
+    process: { type: processSchema, default: undefined },
+    whyUs: { type: whyUsSchema, default: undefined },
+    showcase: { type: showcaseSchema, default: undefined },
+    deliverables: { type: headingListSchema, default: undefined },
+    platforms: { type: platformsSchema, default: undefined },
+    comparison: { type: comparisonSchema, default: undefined },
+    tools: { type: toolsSchema, default: undefined },
+    faq: { type: faqSchema, default: undefined },
 
     status: { type: Boolean, default: false },
     isFeatured: { type: Boolean, default: false, index: true },

@@ -27,7 +27,9 @@ const buildUniqueSlug = async (base: string, ignoreId?: string): Promise<string>
 };
 
 const createService = async (payload: IService): Promise<IService> => {
-  payload.slug = await buildUniqueSlug(payload.slug || payload.name);
+  // Never store a blank slug — fall back to the name (buildUniqueSlug itself
+  // guarantees a non-empty result even if both are blank).
+  payload.slug = await buildUniqueSlug(payload.slug?.trim() || payload.name);
   return Service.create(payload);
 };
 
@@ -110,13 +112,18 @@ const updateService = async (
   data: Partial<IService>,
   lastUpdatedBy?: string
 ): Promise<IService> => {
-  const existing = await Service.findOne({ slug, is_deleted: false }).select("_id");
+  const existing = await Service.findOne({ slug, is_deleted: false }).select("_id name");
   if (!existing) {
     throw new AppError(StatusCodes.NOT_FOUND, "Service not found or already deleted.");
   }
 
-  if (data.slug) {
-    data.slug = await buildUniqueSlug(data.slug, String(existing._id));
+  // Whenever the slug is part of the payload, always run it through
+  // buildUniqueSlug so a blank/whitespace value can never overwrite the stored
+  // slug — regenerate from the (new or existing) name instead.
+  if (data.slug !== undefined) {
+    const source =
+      data.slug?.trim() || data.name?.trim() || (existing as { name?: string }).name || "service";
+    data.slug = await buildUniqueSlug(source, String(existing._id));
   }
 
   const setObj: Record<string, unknown> = {};
