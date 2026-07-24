@@ -32,6 +32,11 @@ export interface IMeeting {
   /** Opaque token used for self-serve reschedule/cancel links (no login). */
   manageToken?: string;
 
+  /** Host's private note about the meeting (what was discussed, prep, etc.). */
+  adminNote?: string;
+  /** Reason captured when the meeting is cancelled. */
+  cancellationReason?: string;
+
   /** Reminder/follow-up bookkeeping so each email is sent at most once. */
   reminderSent?: boolean;
   followupSent?: boolean;

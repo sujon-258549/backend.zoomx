@@ -90,11 +90,26 @@ const getMeeting = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateStatus = catchAsync(async (req: Request, res: Response) => {
-  const result = await MeetingServices.updateStatus(req.params.id, req.body.status);
+  const result = await MeetingServices.updateStatus(
+    req.params.id,
+    req.body.status,
+    req.body.cancellationReason
+  );
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
     message: "Meeting status updated successfully",
+    data: result,
+  });
+});
+
+/** Admin — save a private note on a meeting. */
+const updateNote = catchAsync(async (req: Request, res: Response) => {
+  const result = await MeetingServices.updateNote(req.params.id, req.body.adminNote);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Note saved successfully",
     data: result,
   });
 });
@@ -118,5 +133,6 @@ export const MeetingControllers = {
   getAllMeetings,
   getMeeting,
   updateStatus,
+  updateNote,
   deleteMeeting,
 };

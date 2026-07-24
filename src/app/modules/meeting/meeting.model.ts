@@ -28,6 +28,9 @@ const meetingSchema = new Schema<IMeeting>(
       default: [],
     },
 
+    adminNote: { type: String, trim: true, default: "" },
+    cancellationReason: { type: String, trim: true, default: "" },
+
     manageToken: { type: String, trim: true, index: true },
     reminderSent: { type: Boolean, default: false },
     followupSent: { type: Boolean, default: false },

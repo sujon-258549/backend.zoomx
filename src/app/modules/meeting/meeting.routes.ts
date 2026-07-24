@@ -37,6 +37,13 @@ router.patch(
   validateRequest(MeetingValidation.updateStatus),
   MeetingControllers.updateStatus
 );
+router.patch(
+  "/:id/note",
+  auth(),
+  checkPermission("Meetings", "update"),
+  validateRequest(MeetingValidation.note),
+  MeetingControllers.updateNote
+);
 router.delete(
   "/:id",
   auth(),

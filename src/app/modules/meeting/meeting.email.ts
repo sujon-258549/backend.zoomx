@@ -154,12 +154,16 @@ export const sendCancellationEmails = async (m: IMeeting): Promise<void> => {
   const hostWhen = formatInZone(m.startTime, m.hostTimezone);
   const rebook = `<a href="${FRONTEND}/#book-a-call" style="color:${BRAND};">Book a new time</a>`;
 
+  const reasonRow = m.cancellationReason
+    ? row("Reason", m.cancellationReason.replace(/</g, "&lt;"))
+    : "";
+
   try {
     await EmailHelper.sendEmail(
       m.email,
       shell(
         "Your meeting was cancelled",
-        row("When", `${bookerWhen} (${m.bookerTimezone})`),
+        row("When", `${bookerWhen} (${m.bookerTimezone})`) + reasonRow,
         `This booking has been cancelled. ${rebook} whenever you're ready.`,
       ),
       `Cancelled — ${bookerWhen}`,
@@ -177,7 +181,10 @@ export const sendCancellationEmails = async (m: IMeeting): Promise<void> => {
         hostTo,
         shell(
           "A booking was cancelled",
-          row("Name", m.name) + row("Email", m.email) + row("When", `${hostWhen} (${m.hostTimezone})`),
+          row("Name", m.name) +
+            row("Email", m.email) +
+            row("When", `${hostWhen} (${m.hostTimezone})`) +
+            reasonRow,
           "This slot is now free again.",
         ),
         `Cancelled: ${m.name} — ${hostWhen}`,

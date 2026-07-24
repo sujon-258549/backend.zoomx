@@ -27,7 +27,14 @@ const reschedule = z.object({
 const updateStatus = z.object({
   body: z.object({
     status: z.enum(["confirmed", "cancelled", "completed"]),
+    cancellationReason: z.string().optional(),
   }),
 });
 
-export const MeetingValidation = { book, reschedule, updateStatus };
+const note = z.object({
+  body: z.object({
+    adminNote: z.string().optional(),
+  }),
+});
+
+export const MeetingValidation = { book, reschedule, updateStatus, note };
