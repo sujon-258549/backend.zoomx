@@ -53,4 +53,6 @@ export interface IAvailableSlot {
   visitorLabel: string;
   /** Wall-clock label in the host timezone. */
   hostLabel: string;
+  /** False when the slot is already booked (shown as "Booked", not selectable). */
+  available: boolean;
 }

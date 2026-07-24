@@ -45,7 +45,7 @@ const generateSlotsForDate = (
   d: number,
   now: number,
   busy: Busy[]
-): { start: Date; end: Date }[] => {
+): { start: Date; end: Date; available: boolean }[] => {
   const weekday = new Date(Date.UTC(y, m - 1, d)).getUTCDay();
   const dayCfg = settings.availabilityDays?.find((x) => x.day === weekday);
   if (!dayCfg || !dayCfg.enabled || !dayCfg.windows?.length) return [];
@@ -68,7 +68,7 @@ const generateSlotsForDate = (
   const earliest = now + (settings.minNoticeHours || 0) * 60 * 60 * 1000;
   const latest = now + (settings.maxAdvanceDays || 30) * DAY_MS;
 
-  const slots: { start: Date; end: Date }[] = [];
+  const slots: { start: Date; end: Date; available: boolean }[] = [];
   for (const w of dayCfg.windows) {
     const startMin = parseHHmm(w.start);
     const endMin = parseHHmm(w.end);
@@ -79,11 +79,12 @@ const generateSlotsForDate = (
       const startDate = zonedWallTimeToUtc(y, m, d, hh, mm, settings.timezone);
       const startMs = startDate.getTime();
       const endMs = startMs + duration * 60 * 1000;
-      if (startMs < earliest) continue; // too soon / in the past
-      if (startMs > latest) continue; // beyond booking horizon
+      if (startMs < earliest) continue; // too soon / in the past — hidden entirely
+      if (startMs > latest) continue; // beyond booking horizon — hidden entirely
+      // Slots that clash with a booking are still returned, but flagged as taken
+      // so the UI can show them as "Booked" instead of hiding them.
       const clashes = busy.some((b) => startMs < b.end && endMs > b.start);
-      if (clashes) continue;
-      slots.push({ start: startDate, end: new Date(endMs) });
+      slots.push({ start: startDate, end: new Date(endMs), available: !clashes });
     }
   }
   return slots;
@@ -152,6 +153,7 @@ const getAvailableSlots = async (
         end: s.end.toISOString(),
         visitorLabel: formatInZone(s.start, tz),
         hostLabel: formatInZone(s.start, settings.timezone),
+        available: s.available,
       };
       if (!grouped.has(visitorDate)) grouped.set(visitorDate, []);
       grouped.get(visitorDate)!.push(slot);
@@ -199,7 +201,7 @@ const bookMeeting = async (input: BookInput): Promise<IMeeting> => {
   const kd = parseDateKey(key)!;
   const busy = await fetchBusy(startDate.getTime() - DAY_MS, startDate.getTime() + DAY_MS);
   const valid = generateSlotsForDate(settings, kd.y, kd.m, kd.d, Date.now(), busy).some(
-    (s) => s.start.getTime() === startDate.getTime()
+    (s) => s.start.getTime() === startDate.getTime() && s.available
   );
   if (!valid) {
     throw new AppError(
@@ -344,7 +346,7 @@ const rescheduleByToken = async (
   const kd = parseDateKey(key)!;
   const busy = await fetchBusy(startDate.getTime() - DAY_MS, startDate.getTime() + DAY_MS);
   const valid = generateSlotsForDate(settings, kd.y, kd.m, kd.d, Date.now(), busy).some(
-    (s) => s.start.getTime() === startDate.getTime()
+    (s) => s.start.getTime() === startDate.getTime() && s.available
   );
   if (!valid) {
     throw new AppError(StatusCodes.CONFLICT, "That time is not available. Please pick another slot.");
