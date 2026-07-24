@@ -38,6 +38,8 @@ const update = z.object({
     followupEnabled: z.boolean().optional(),
     followupMinutesAfter: z.number().int().min(0).max(10080).optional(),
     followupMessage: z.string().optional(),
+    cancelMessage: z.string().optional(),
+    completedMessage: z.string().optional(),
   }),
 });
 

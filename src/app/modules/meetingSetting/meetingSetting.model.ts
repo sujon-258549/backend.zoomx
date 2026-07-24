@@ -50,7 +50,18 @@ const meetingSettingSchema = new Schema<IMeetingSetting>(
     followupMessage: {
       type: String,
       trim: true,
-      default: "Thank you for meeting with us! We'd love your feedback — just reply to this email.",
+      default:
+        "<p>Thank you for meeting with us! We'd love your feedback — just reply to this email.</p>",
+    },
+    cancelMessage: {
+      type: String,
+      trim: true,
+      default: "<p>Your meeting has been cancelled. Feel free to book a new time whenever you're ready.</p>",
+    },
+    completedMessage: {
+      type: String,
+      trim: true,
+      default: "<p>Thanks for meeting with us — it was great connecting! Reach out anytime.</p>",
     },
   },
   { timestamps: true, versionKey: false }

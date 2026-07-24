@@ -59,8 +59,12 @@ export interface IMeetingSetting {
   followupEnabled?: boolean;
   /** Minutes after the meeting ends to send the follow-up. */
   followupMinutesAfter?: number;
-  /** Body text of the follow-up email. */
+  /** Follow-up email body (rich-text HTML). */
   followupMessage?: string;
+  /** Cancellation email body (rich-text HTML). */
+  cancelMessage?: string;
+  /** "Meeting completed" email body (rich-text HTML). */
+  completedMessage?: string;
 
   createdAt?: Date;
   updatedAt?: Date;
