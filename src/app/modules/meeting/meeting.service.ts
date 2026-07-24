@@ -293,16 +293,18 @@ const updateStatus = async (
   if (!doc) throw new AppError(StatusCodes.NOT_FOUND, "Meeting not found.");
 
   const prev = doc.status;
-  // Terminal-state rules: a cancelled meeting can't be re-opened, and a
-  // completed meeting can't be cancelled.
+  // Terminal states: neither a cancelled nor a completed meeting can be changed.
   if (prev === "cancelled" && status !== "cancelled") {
     throw new AppError(
       StatusCodes.BAD_REQUEST,
       "A cancelled meeting can't be confirmed or completed. Book a new time instead."
     );
   }
-  if (prev === "completed" && status === "cancelled") {
-    throw new AppError(StatusCodes.BAD_REQUEST, "A completed meeting can't be cancelled.");
+  if (prev === "completed" && status !== "completed") {
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      "A completed meeting can't be changed."
+    );
   }
 
   // Marking "completed" manually triggers the follow-up (and blocks the auto one).
