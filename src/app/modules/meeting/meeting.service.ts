@@ -17,6 +17,7 @@ import {
   sendCancellationEmails,
   sendRescheduleEmails,
   sendReminderEmail,
+  sendFollowupEmail,
 } from "./meeting.email";
 import { IAvailableSlot, IMeeting, MeetingStatus } from "./meeting.interface";
 import { Meeting } from "./meeting.model";
@@ -353,8 +354,8 @@ const rescheduleByToken = async (
   doc.endTime = new Date(startDate.getTime() + settings.slotDurationMinutes * 60 * 1000);
   doc.durationMinutes = settings.slotDurationMinutes;
   if (isValidTimeZone(timezone)) doc.bookerTimezone = timezone;
-  doc.reminded24h = false;
-  doc.reminded1h = false;
+  doc.reminderSent = false;
+  doc.followupSent = false;
   try {
     await doc.save();
   } catch (err: unknown) {
