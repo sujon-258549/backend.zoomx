@@ -369,33 +369,59 @@ const rescheduleByToken = async (
   return obj;
 };
 
-/** Scheduler entry — send 24h & 1h reminders for imminent confirmed meetings. */
-const sendDueReminders = async (): Promise<void> => {
-  const now = Date.now();
-  const H = 60 * 60 * 1000;
+/** Human "in X" label from minutes (e.g. 90 → "1 hour 30 minutes"). */
+const humanizeMinutes = (mins: number): string => {
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  const parts: string[] = [];
+  if (h) parts.push(`${h} hour${h > 1 ? "s" : ""}`);
+  if (m || !h) parts.push(`${m} minute${m !== 1 ? "s" : ""}`);
+  return parts.join(" ");
+};
 
-  const due24 = await Meeting.find({
-    status: "confirmed",
-    is_deleted: false,
-    reminded24h: { $ne: true },
-    startTime: { $gt: new Date(now + 23 * H), $lte: new Date(now + 24 * H) },
-  });
-  for (const m of due24) {
-    await sendReminderEmail(m.toObject(), "24 hours");
-    m.reminded24h = true;
-    await m.save();
+/**
+ * Scheduler entry — sends the (admin-configured) reminder before each meeting
+ * and, if enabled, a follow-up after it. Each email goes out at most once.
+ */
+const sendDueReminders = async (): Promise<void> => {
+  const settings = await getSettingsDoc();
+  const now = Date.now();
+  const MIN = 60 * 1000;
+
+  // ── Reminder: fire once the meeting is within `reminderMinutesBefore` of start ──
+  const before = settings.reminderMinutesBefore ?? 60;
+  if (before > 0) {
+    const dueReminders = await Meeting.find({
+      status: "confirmed",
+      is_deleted: false,
+      reminderSent: { $ne: true },
+      startTime: { $gt: new Date(now), $lte: new Date(now + before * MIN) },
+    });
+    for (const m of dueReminders) {
+      await sendReminderEmail(m.toObject(), humanizeMinutes(before));
+      m.reminderSent = true;
+      await m.save();
+    }
   }
 
-  const due1 = await Meeting.find({
-    status: "confirmed",
-    is_deleted: false,
-    reminded1h: { $ne: true },
-    startTime: { $gt: new Date(now), $lte: new Date(now + H) },
-  });
-  for (const m of due1) {
-    await sendReminderEmail(m.toObject(), "1 hour");
-    m.reminded1h = true;
-    await m.save();
+  // ── Follow-up: fire once `followupMinutesAfter` has passed since the end ──
+  if (settings.followupEnabled) {
+    const after = settings.followupMinutesAfter ?? 60;
+    // Lower bound (24h) so a first run never emails a huge backlog of old meetings.
+    const dueFollowups = await Meeting.find({
+      status: "confirmed",
+      is_deleted: false,
+      followupSent: { $ne: true },
+      endTime: {
+        $gt: new Date(now - after * MIN - 24 * 60 * MIN),
+        $lte: new Date(now - after * MIN),
+      },
+    });
+    for (const m of dueFollowups) {
+      await sendFollowupEmail(m.toObject(), settings.followupMessage || "Thank you for your time!");
+      m.followupSent = true;
+      await m.save();
+    }
   }
 };
 
