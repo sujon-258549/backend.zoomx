@@ -44,6 +44,6 @@ const followup = z.object({
 });
 
 const sendOtp = z.object({ body: z.object({ email: z.string().email() }) });
-const verifyOtp = z.object({ body: z.object({ email: z.string().email(), code: z.string().min(3) }) });
+const verifyOtp = z.object({ body: z.object({ email: z.string().email(), code: z.string().min(6) }) });
 
 export const MeetingValidation = { book, reschedule, updateStatus, note, followup, sendOtp, verifyOtp };
