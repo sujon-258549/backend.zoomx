@@ -275,13 +275,11 @@ export const sendReminderEmail = async (m: IMeeting, whenAway: string): Promise<
   }
 };
 
-/** Post-meeting follow-up email with the host's configured message. */
-export const sendFollowupEmail = async (m: IMeeting, message: string): Promise<void> => {
+/** Post-meeting follow-up email with the host's configured rich-text message. */
+export const sendFollowupEmail = async (m: IMeeting, messageHtml: string): Promise<void> => {
   if (!config.sender_email) return;
   const bookerWhen = formatInZone(m.startTime, m.bookerTimezone);
-  const body = `<tr><td colspan="2" style="padding:4px 0 12px;font-size:15px;line-height:1.65;">${
-    message.replace(/</g, "&lt;").replace(/\n/g, "<br>")
-  }</td></tr>${row("Your meeting was", bookerWhen)}`;
+  const body = messageRow(messageHtml) + row("Your meeting was", bookerWhen);
   try {
     await EmailHelper.sendEmail(
       m.email,
@@ -292,5 +290,23 @@ export const sendFollowupEmail = async (m: IMeeting, message: string): Promise<v
     );
   } catch (err) {
     console.error("Follow-up email failed:", err);
+  }
+};
+
+/** "Meeting completed" email (sent when the host marks it completed). */
+export const sendCompletedEmail = async (m: IMeeting, messageHtml: string): Promise<void> => {
+  if (!config.sender_email) return;
+  const bookerWhen = formatInZone(m.startTime, m.bookerTimezone);
+  const body = messageRow(messageHtml) + row("Your meeting was", bookerWhen);
+  try {
+    await EmailHelper.sendEmail(
+      m.email,
+      shell(`Your meeting is complete, ${m.name.split(" ")[0]} ✅`, body, "Thanks again for your time."),
+      "Meeting completed",
+      m.adminEmail || undefined,
+      "ZOOMX Digital",
+    );
+  } catch (err) {
+    console.error("Completed email failed:", err);
   }
 };

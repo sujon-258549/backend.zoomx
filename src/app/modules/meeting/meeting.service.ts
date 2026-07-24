@@ -18,6 +18,7 @@ import {
   sendRescheduleEmails,
   sendReminderEmail,
   sendFollowupEmail,
+  sendCompletedEmail,
 } from "./meeting.email";
 import { IAvailableSlot, IMeeting, MeetingStatus } from "./meeting.interface";
 import { Meeting } from "./meeting.model";
@@ -315,12 +316,17 @@ const updateStatus = async (
   await doc.save();
   const obj = doc.toObject();
 
-  if (status === "cancelled" && prev !== "cancelled") {
-    void sendCancellationEmails(obj); // notify booker + host, free the slot
-  }
-  if (shouldFollowup) {
+  if (
+    (status === "cancelled" && prev !== "cancelled") ||
+    shouldFollowup
+  ) {
     const settings = await getSettingsDoc();
-    void sendFollowupEmail(obj, settings.followupMessage || "Thank you for meeting with us!");
+    if (status === "cancelled" && prev !== "cancelled") {
+      void sendCancellationEmails(obj, settings.cancelMessage || ""); // notify + free slot
+    }
+    if (shouldFollowup) {
+      void sendCompletedEmail(obj, settings.completedMessage || "");
+    }
   }
   return obj;
 };
@@ -362,7 +368,8 @@ const cancelByToken = async (token: string): Promise<IMeeting> => {
   if (doc.status !== "cancelled") {
     doc.status = "cancelled";
     await doc.save();
-    void sendCancellationEmails(doc.toObject());
+    const settings = await getSettingsDoc();
+    void sendCancellationEmails(doc.toObject(), settings.cancelMessage || "");
   }
   return doc.toObject();
 };
