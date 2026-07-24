@@ -17,6 +17,18 @@ router.post(
   MeetingControllers.bookMeeting
 );
 
+// OTP endpoints for booking email verification
+router.post(
+  "/send-otp",
+  validateRequest(MeetingValidation.sendOtp),
+  MeetingControllers.sendBookingOtp
+);
+router.post(
+  "/verify-otp",
+  validateRequest(MeetingValidation.verifyOtp),
+  MeetingControllers.verifyBookingOtp
+);
+
 // Self-serve manage (reschedule / cancel) via opaque token — no auth.
 router.get("/manage/:token", MeetingControllers.getByToken);
 router.post("/manage/:token/cancel", contactRateLimit, MeetingControllers.cancelByToken);

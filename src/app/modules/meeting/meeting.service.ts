@@ -20,6 +20,10 @@ import {
   sendFollowupEmail,
   sendCompletedEmail,
 } from "./meeting.email";
+import { EmailHelper } from "../../utils/emailHelper";
+import redis from "../../shared/redis";
+import crypto from "crypto";
+import { generateOtp } from "../../utils/generateOtp";
 import { IAvailableSlot, IMeeting, MeetingStatus } from "./meeting.interface";
 import { Meeting } from "./meeting.model";
 
@@ -213,6 +217,39 @@ const bookMeeting = async (input: BookInput): Promise<IMeeting> => {
 
   const endDate = new Date(startDate.getTime() + settings.slotDurationMinutes * 60 * 1000);
 
+  // Require OTP verification for this email before allowing a booking
+  const normalizedEmail = String(input.email || "").trim().toLowerCase();
+  const verified = await redis.get(`otp:booking:verified:${normalizedEmail}`);
+  if (!verified) {
+    throw new AppError(
+      StatusCodes.FORBIDDEN,
+      "Email not verified. Please verify the OTP sent to your email before booking."
+    );
+  }
+
+  // Enforce per-email daily booking limit (max 2 per visitor-day)
+  try {
+    const visitorDate = zonedDateKey(startDate, input.timezone);
+    const kd = parseDateKey(visitorDate)!;
+    const dayStartUtc = zonedWallTimeToUtc(kd.y, kd.m, kd.d, 0, 0, input.timezone).getTime();
+    const nextDayStartUtc = zonedWallTimeToUtc(kd.y, kd.m, kd.d + 1, 0, 0, input.timezone).getTime();
+    const emailBookingCount = await Meeting.countDocuments({
+      email: normalizedEmail,
+      is_deleted: false,
+      startTime: { $gte: new Date(dayStartUtc), $lt: new Date(nextDayStartUtc) },
+    });
+    if (emailBookingCount >= 2) {
+      throw new AppError(
+        StatusCodes.FORBIDDEN,
+        "This email has already booked the maximum of 2 slots for the selected day."
+      );
+    }
+  } catch (err) {
+    // if something goes wrong counting, fail safe by rejecting the booking
+    if (err instanceof AppError) throw err;
+    throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, "Failed to validate booking limits");
+  }
+
   try {
     const created = await Meeting.create({
       name: input.name,
@@ -236,6 +273,8 @@ const bookMeeting = async (input: BookInput): Promise<IMeeting> => {
     // fails the booking — sendBookingEmails swallows its own errors).
     void sendBookingEmails(meeting, settings.title || "Meeting with ZOOMX");
 
+    // Clear verification after successful booking so a fresh OTP is needed later
+    await redis.del(`otp:booking:verified:${String(input.email || "").trim().toLowerCase()}`);
     return meeting;
   } catch (err: unknown) {
     if ((err as { code?: number })?.code === 11000) {
@@ -499,5 +538,38 @@ export const MeetingServices = {
       throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, "Failed to send follow-up email");
     }
     return m.toObject();
+  },
+  sendBookingOtp: async (email: string) => {
+    const normalized = String(email || "").trim().toLowerCase();
+    if (!normalized) return { message: "If that email is valid, an OTP has been sent." };
+    // Rate limit: max 5 per hour per email
+    const key = `otp:booking:sent:${normalized}`;
+    const sent = Number((await redis.get(key)) || "0");
+    if (sent >= 5) return { message: "OTP request limit reached. Try again later." };
+
+    const code = generateOtp();
+    // Store hashed code with short TTL (10 minutes)
+    const hash = crypto.createHash("sha256").update(code).digest("hex");
+    await redis.set(`otp:booking:code:${normalized}`, hash, "EX", 600);
+    await redis.set(key, String(sent + 1), "EX", 60 * 60);
+
+    // Send email with code
+    try {
+      await EmailHelper.sendEmail(normalized, `Your booking verification code: ${code}`, "Booking verification code");
+    } catch (err) {
+      console.error("Failed to send booking OTP email:", err);
+    }
+    return { message: "If that email is valid, an OTP has been sent." };
+  },
+  verifyBookingOtp: async (email: string, code: string) => {
+    const normalized = String(email || "").trim().toLowerCase();
+    const stored = await redis.get(`otp:booking:code:${normalized}`);
+    if (!stored) throw new AppError(StatusCodes.BAD_REQUEST, "OTP expired or not requested");
+    const hash = crypto.createHash("sha256").update(code).digest("hex");
+    if (hash !== stored) throw new AppError(StatusCodes.BAD_REQUEST, "Invalid OTP code");
+    await redis.del(`otp:booking:code:${normalized}`);
+    // Mark verified for a short window (e.g., 30 minutes)
+    await redis.set(`otp:booking:verified:${normalized}`, "1", "EX", 30 * 60);
+    return { message: "Email verified" };
   },
 };
