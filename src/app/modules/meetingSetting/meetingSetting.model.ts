@@ -31,6 +31,27 @@ const meetingSettingSchema = new Schema<IMeetingSetting>(
     minNoticeHours: { type: Number, default: 2, min: 0, max: 720 },
     availabilityDays: { type: [availabilityDaySchema], default: [] },
     isActive: { type: Boolean, default: true },
+
+    blockedDates: { type: [String], default: [] },
+    dailyLimit: { type: Number, default: 0, min: 0, max: 100 },
+    customQuestions: {
+      type: [
+        new Schema(
+          { label: { type: String, trim: true, required: true }, required: { type: Boolean, default: false } },
+          { _id: false }
+        ),
+      ],
+      default: [],
+    },
+
+    reminderMinutesBefore: { type: Number, default: 60, min: 0, max: 10080 },
+    followupEnabled: { type: Boolean, default: false },
+    followupMinutesAfter: { type: Number, default: 60, min: 0, max: 10080 },
+    followupMessage: {
+      type: String,
+      trim: true,
+      default: "Thank you for meeting with us! We'd love your feedback — just reply to this email.",
+    },
   },
   { timestamps: true, versionKey: false }
 );

@@ -28,6 +28,43 @@ const bookMeeting = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+/** Public — fetch a booking by its manage token. */
+const getByToken = catchAsync(async (req: Request, res: Response) => {
+  const result = await MeetingServices.getByToken(req.params.token);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Booking fetched successfully",
+    data: result,
+  });
+});
+
+/** Public — cancel a booking by its manage token. */
+const cancelByToken = catchAsync(async (req: Request, res: Response) => {
+  const result = await MeetingServices.cancelByToken(req.params.token);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Meeting cancelled successfully",
+    data: result,
+  });
+});
+
+/** Public — reschedule a booking by its manage token. */
+const rescheduleByToken = catchAsync(async (req: Request, res: Response) => {
+  const result = await MeetingServices.rescheduleByToken(
+    req.params.token,
+    req.body.start,
+    req.body.timezone
+  );
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Meeting rescheduled successfully",
+    data: result,
+  });
+});
+
 /** Admin — list bookings. */
 const getAllMeetings = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, ["keyword", "status", "from", "to"]);
@@ -75,6 +112,9 @@ const deleteMeeting = catchAsync(async (req: Request, res: Response) => {
 export const MeetingControllers = {
   getSlots,
   bookMeeting,
+  getByToken,
+  cancelByToken,
+  rescheduleByToken,
   getAllMeetings,
   getMeeting,
   updateStatus,

@@ -28,6 +28,16 @@ const update = z.object({
     minNoticeHours: z.number().int().min(0).max(720).optional(),
     availabilityDays: z.array(availabilityDay).max(7).optional(),
     isActive: z.boolean().optional(),
+    blockedDates: z.array(z.string().regex(/^\d{4}-\d{2}-\d{2}$/)).optional(),
+    dailyLimit: z.number().int().min(0).max(100).optional(),
+    customQuestions: z
+      .array(z.object({ label: z.string().min(1), required: z.boolean().optional() }))
+      .max(10)
+      .optional(),
+    reminderMinutesBefore: z.number().int().min(0).max(10080).optional(),
+    followupEnabled: z.boolean().optional(),
+    followupMinutesAfter: z.number().int().min(0).max(10080).optional(),
+    followupMessage: z.string().optional(),
   }),
 });
 

@@ -10,6 +10,17 @@ const book = z.object({
     start: z.string().min(1, "Slot start is required"),
     /** The visitor's IANA timezone. */
     timezone: z.string().min(1, "Timezone is required"),
+    /** Answers to the host's custom questions. */
+    customAnswers: z
+      .array(z.object({ question: z.string(), answer: z.string() }))
+      .optional(),
+  }),
+});
+
+const reschedule = z.object({
+  body: z.object({
+    start: z.string().min(1, "New slot start is required"),
+    timezone: z.string().min(1, "Timezone is required"),
   }),
 });
 
@@ -19,4 +30,4 @@ const updateStatus = z.object({
   }),
 });
 
-export const MeetingValidation = { book, updateStatus };
+export const MeetingValidation = { book, reschedule, updateStatus };

@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import app from "./app";
 import config from "./app/config";
 import seedAdmin from "./app/db/seed";
+import { startMeetingReminders } from "./app/modules/meeting/meeting.scheduler";
 import { initSocket } from "./app/socket";
 
 
@@ -41,6 +42,7 @@ async function bootstrap() {
 
     server = createServer(app);
     initSocket(server);
+    startMeetingReminders();
 
     server.listen(config.port, () => {
       console.log(

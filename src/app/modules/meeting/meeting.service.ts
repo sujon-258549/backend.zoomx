@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import { StatusCodes } from "http-status-codes";
 import AppError from "../../errors/appError";
 import { paginationHelper } from "../../helpers/paginationHelper";
@@ -11,6 +12,12 @@ import {
 } from "../../utils/timezone";
 import { IMeetingSetting } from "../meetingSetting/meetingSetting.interface";
 import { getSettingsDoc } from "../meetingSetting/meetingSetting.service";
+import {
+  sendBookingEmails,
+  sendCancellationEmails,
+  sendRescheduleEmails,
+  sendReminderEmail,
+} from "./meeting.email";
 import { IAvailableSlot, IMeeting, MeetingStatus } from "./meeting.interface";
 import { Meeting } from "./meeting.model";
 
@@ -41,6 +48,19 @@ const generateSlotsForDate = (
   const weekday = new Date(Date.UTC(y, m - 1, d)).getUTCDay();
   const dayCfg = settings.availabilityDays?.find((x) => x.day === weekday);
   if (!dayCfg || !dayCfg.enabled || !dayCfg.windows?.length) return [];
+
+  // Host-timezone civil date for this slate of slots.
+  const dateKey = `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+  // Holidays / manually blocked dates → no availability at all.
+  if (settings.blockedDates?.includes(dateKey)) return [];
+  // Daily booking cap → once the day is full, offer nothing more.
+  const dailyLimit = settings.dailyLimit || 0;
+  if (dailyLimit > 0) {
+    const bookedToday = busy.filter(
+      (b) => zonedDateKey(new Date(b.start), settings.timezone) === dateKey
+    ).length;
+    if (bookedToday >= dailyLimit) return [];
+  }
 
   const duration = settings.slotDurationMinutes;
   const step = duration + (settings.bufferMinutes || 0);
@@ -156,6 +176,7 @@ interface BookInput {
   notes?: string;
   start: string; // UTC ISO
   timezone: string; // visitor tz
+  customAnswers?: { question: string; answer: string }[];
 }
 
 const bookMeeting = async (input: BookInput): Promise<IMeeting> => {
@@ -194,6 +215,7 @@ const bookMeeting = async (input: BookInput): Promise<IMeeting> => {
       email: input.email,
       phone: input.phone,
       notes: input.notes,
+      customAnswers: input.customAnswers ?? [],
       startTime: startDate,
       endTime: endDate,
       durationMinutes: settings.slotDurationMinutes,
@@ -201,9 +223,16 @@ const bookMeeting = async (input: BookInput): Promise<IMeeting> => {
       hostTimezone: settings.timezone,
       meetingUrl: settings.meetingUrl,
       adminEmail: settings.adminEmail,
+      manageToken: randomUUID(),
       status: "confirmed",
     });
-    return created.toObject();
+    const meeting = created.toObject();
+
+    // Fire-and-forget confirmation + host-notification emails (never blocks or
+    // fails the booking — sendBookingEmails swallows its own errors).
+    void sendBookingEmails(meeting, settings.title || "Meeting with ZOOMX");
+
+    return meeting;
   } catch (err: unknown) {
     if ((err as { code?: number })?.code === 11000) {
       throw new AppError(
@@ -272,6 +301,103 @@ const deleteMeeting = async (id: string): Promise<IMeeting> => {
   return doc;
 };
 
+// ── Self-serve manage (reschedule / cancel) via opaque token — no login ──
+
+/** Public — fetch a booking for its manage page. */
+const getByToken = async (token: string): Promise<IMeeting> => {
+  const doc = await Meeting.findOne({ manageToken: token, is_deleted: false }).lean<IMeeting>();
+  if (!doc) throw new AppError(StatusCodes.NOT_FOUND, "Booking not found.");
+  return doc;
+};
+
+/** Public — cancel a booking; frees the slot and notifies both parties. */
+const cancelByToken = async (token: string): Promise<IMeeting> => {
+  const doc = await Meeting.findOne({ manageToken: token, is_deleted: false });
+  if (!doc) throw new AppError(StatusCodes.NOT_FOUND, "Booking not found.");
+  if (doc.status !== "cancelled") {
+    doc.status = "cancelled";
+    await doc.save();
+    void sendCancellationEmails(doc.toObject());
+  }
+  return doc.toObject();
+};
+
+/** Public — move a booking to a new open slot; re-validates availability. */
+const rescheduleByToken = async (
+  token: string,
+  newStart: string,
+  timezone: string
+): Promise<IMeeting> => {
+  const settings = await getSettingsDoc();
+  const doc = await Meeting.findOne({ manageToken: token, is_deleted: false });
+  if (!doc) throw new AppError(StatusCodes.NOT_FOUND, "Booking not found.");
+  if (doc.status === "cancelled") {
+    throw new AppError(StatusCodes.BAD_REQUEST, "This booking was cancelled — please book a new time.");
+  }
+  const startDate = new Date(newStart);
+  if (Number.isNaN(startDate.getTime())) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "Invalid slot start time.");
+  }
+
+  const key = zonedDateKey(startDate, settings.timezone);
+  const kd = parseDateKey(key)!;
+  const busy = await fetchBusy(startDate.getTime() - DAY_MS, startDate.getTime() + DAY_MS);
+  const valid = generateSlotsForDate(settings, kd.y, kd.m, kd.d, Date.now(), busy).some(
+    (s) => s.start.getTime() === startDate.getTime()
+  );
+  if (!valid) {
+    throw new AppError(StatusCodes.CONFLICT, "That time is not available. Please pick another slot.");
+  }
+
+  doc.startTime = startDate;
+  doc.endTime = new Date(startDate.getTime() + settings.slotDurationMinutes * 60 * 1000);
+  doc.durationMinutes = settings.slotDurationMinutes;
+  if (isValidTimeZone(timezone)) doc.bookerTimezone = timezone;
+  doc.reminded24h = false;
+  doc.reminded1h = false;
+  try {
+    await doc.save();
+  } catch (err: unknown) {
+    if ((err as { code?: number })?.code === 11000) {
+      throw new AppError(StatusCodes.CONFLICT, "That time was just taken. Please pick another.");
+    }
+    throw err;
+  }
+  const obj = doc.toObject();
+  void sendRescheduleEmails(obj, settings.title || "Meeting with ZOOMX");
+  return obj;
+};
+
+/** Scheduler entry — send 24h & 1h reminders for imminent confirmed meetings. */
+const sendDueReminders = async (): Promise<void> => {
+  const now = Date.now();
+  const H = 60 * 60 * 1000;
+
+  const due24 = await Meeting.find({
+    status: "confirmed",
+    is_deleted: false,
+    reminded24h: { $ne: true },
+    startTime: { $gt: new Date(now + 23 * H), $lte: new Date(now + 24 * H) },
+  });
+  for (const m of due24) {
+    await sendReminderEmail(m.toObject(), "24 hours");
+    m.reminded24h = true;
+    await m.save();
+  }
+
+  const due1 = await Meeting.find({
+    status: "confirmed",
+    is_deleted: false,
+    reminded1h: { $ne: true },
+    startTime: { $gt: new Date(now), $lte: new Date(now + H) },
+  });
+  for (const m of due1) {
+    await sendReminderEmail(m.toObject(), "1 hour");
+    m.reminded1h = true;
+    await m.save();
+  }
+};
+
 export const MeetingServices = {
   getAvailableSlots,
   bookMeeting,
@@ -279,4 +405,8 @@ export const MeetingServices = {
   getMeeting,
   updateStatus,
   deleteMeeting,
+  getByToken,
+  cancelByToken,
+  rescheduleByToken,
+  sendDueReminders,
 };

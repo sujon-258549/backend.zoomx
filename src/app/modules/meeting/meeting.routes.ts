@@ -17,6 +17,16 @@ router.post(
   MeetingControllers.bookMeeting
 );
 
+// Self-serve manage (reschedule / cancel) via opaque token — no auth.
+router.get("/manage/:token", MeetingControllers.getByToken);
+router.post("/manage/:token/cancel", contactRateLimit, MeetingControllers.cancelByToken);
+router.post(
+  "/manage/:token/reschedule",
+  contactRateLimit,
+  validateRequest(MeetingValidation.reschedule),
+  MeetingControllers.rescheduleByToken
+);
+
 // ── Admin ──
 router.get("/", auth(), checkPermission("Meetings", "view"), MeetingControllers.getAllMeetings);
 router.get("/:id", auth(), checkPermission("Meetings", "view"), MeetingControllers.getMeeting);

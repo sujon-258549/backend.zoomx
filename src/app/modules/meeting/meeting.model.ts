@@ -18,6 +18,20 @@ const meetingSchema = new Schema<IMeeting>(
     meetingUrl: { type: String, trim: true },
     adminEmail: { type: String, trim: true },
 
+    customAnswers: {
+      type: [
+        new Schema(
+          { question: { type: String, trim: true }, answer: { type: String, trim: true } },
+          { _id: false }
+        ),
+      ],
+      default: [],
+    },
+
+    manageToken: { type: String, trim: true, index: true },
+    reminderSent: { type: Boolean, default: false },
+    followupSent: { type: Boolean, default: false },
+
     status: {
       type: String,
       enum: ["confirmed", "cancelled", "completed"],

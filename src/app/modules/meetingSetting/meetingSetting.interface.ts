@@ -11,6 +11,12 @@ export interface IAvailabilityDay {
   windows: IAvailabilityWindow[];
 }
 
+/** An extra question the host asks on the booking form. */
+export interface ICustomQuestion {
+  label: string;
+  required?: boolean;
+}
+
 /**
  * Singleton meeting/scheduling configuration — the "custom Calendly" settings.
  * Availability windows are authored in `timezone` (the host/admin zone); every
@@ -39,6 +45,22 @@ export interface IMeetingSetting {
   availabilityDays: IAvailabilityDay[];
   /** Master switch for the whole booking feature. */
   isActive: boolean;
+
+  /** Specific dates to block entirely ("YYYY-MM-DD", host-timezone civil dates). */
+  blockedDates?: string[];
+  /** Max confirmed bookings allowed per civil day (0 = unlimited). */
+  dailyLimit?: number;
+  /** Extra questions shown on the booking form. */
+  customQuestions?: ICustomQuestion[];
+
+  /** Minutes before start to email a reminder (0 = disabled). */
+  reminderMinutesBefore?: number;
+  /** Send a follow-up email after the meeting ends. */
+  followupEnabled?: boolean;
+  /** Minutes after the meeting ends to send the follow-up. */
+  followupMinutesAfter?: number;
+  /** Body text of the follow-up email. */
+  followupMessage?: string;
 
   createdAt?: Date;
   updatedAt?: Date;

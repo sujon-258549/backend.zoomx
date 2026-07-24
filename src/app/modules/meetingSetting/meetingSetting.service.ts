@@ -39,6 +39,7 @@ const PUBLIC_FIELDS = [
   "minNoticeHours",
   "availabilityDays",
   "isActive",
+  "customQuestions",
 ] as const;
 
 /** The config is a singleton — fetch it, seeding a default doc on first run. */

@@ -26,6 +26,16 @@ export interface IMeeting {
   meetingUrl?: string;
   adminEmail?: string;
 
+  /** Answers to the host's custom booking questions (label + answer). */
+  customAnswers?: { question: string; answer: string }[];
+
+  /** Opaque token used for self-serve reschedule/cancel links (no login). */
+  manageToken?: string;
+
+  /** Reminder/follow-up bookkeeping so each email is sent at most once. */
+  reminderSent?: boolean;
+  followupSent?: boolean;
+
   status: MeetingStatus;
   is_deleted?: boolean;
 
