@@ -31,13 +31,13 @@ const bookMeeting = catchAsync(async (req: Request, res: Response) => {
 const sendBookingOtp = catchAsync(async (req: Request, res: Response) => {
   const { email } = req.body as { email: string };
   const result = await MeetingServices.sendBookingOtp(email);
-  sendResponse(res, { statusCode: StatusCodes.OK, success: true, message: result.message });
+  sendResponse(res, { statusCode: StatusCodes.OK, success: true, message: result.message, data: result });
 });
 
 const verifyBookingOtp = catchAsync(async (req: Request, res: Response) => {
   const { email, code } = req.body as { email: string; code: string };
   const result = await MeetingServices.verifyBookingOtp(email, code);
-  sendResponse(res, { statusCode: StatusCodes.OK, success: true, message: result.message });
+  sendResponse(res, { statusCode: StatusCodes.OK, success: true, message: result.message, data: result });
 });
 
 /** Public — fetch a booking by its manage token. */

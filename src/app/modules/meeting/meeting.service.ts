@@ -273,8 +273,9 @@ const bookMeeting = async (input: BookInput): Promise<IMeeting> => {
     // fails the booking — sendBookingEmails swallows its own errors).
     void sendBookingEmails(meeting, settings.title || "Meeting with ZOOMX");
 
-    // Clear verification after successful booking so a fresh OTP is needed later
-    await redis.del(`otp:booking:verified:${String(input.email || "").trim().toLowerCase()}`);
+    // Do not clear verification after booking — keep verified status so the
+    // visitor isn't forced to re-verify repeatedly. Verification TTL is set
+    // when the OTP is verified.
     return meeting;
   } catch (err: unknown) {
     if ((err as { code?: number })?.code === 11000) {
@@ -542,10 +543,14 @@ export const MeetingServices = {
   sendBookingOtp: async (email: string) => {
     const normalized = String(email || "").trim().toLowerCase();
     if (!normalized) return { message: "If that email is valid, an OTP has been sent." };
+    // If already verified, don't send another OTP — tell the caller.
+    const already = await redis.get(`otp:booking:verified:${normalized}`);
+    if (already) return { message: "Email already verified.", alreadyVerified: true };
+
     // Rate limit: max 5 per hour per email
     const key = `otp:booking:sent:${normalized}`;
     const sent = Number((await redis.get(key)) || "0");
-    if (sent >= 5) return { message: "OTP request limit reached. Try again later." };
+    if (sent >= 5) return { message: "OTP request limit reached. Try again later.", alreadyVerified: false };
 
     const code = generateOtp();
     // Store hashed code with short TTL (10 minutes)
@@ -559,7 +564,7 @@ export const MeetingServices = {
     } catch (err) {
       console.error("Failed to send booking OTP email:", err);
     }
-    return { message: "If that email is valid, an OTP has been sent." };
+    return { message: "If that email is valid, an OTP has been sent.", alreadyVerified: false };
   },
   verifyBookingOtp: async (email: string, code: string) => {
     const normalized = String(email || "").trim().toLowerCase();
@@ -568,8 +573,9 @@ export const MeetingServices = {
     const hash = crypto.createHash("sha256").update(code).digest("hex");
     if (hash !== stored) throw new AppError(StatusCodes.BAD_REQUEST, "Invalid OTP code");
     await redis.del(`otp:booking:code:${normalized}`);
-    // Mark verified for a short window (e.g., 30 minutes)
-    await redis.set(`otp:booking:verified:${normalized}`, "1", "EX", 30 * 60);
+    // Mark verified for a longer window (24h) so the visitor isn't asked to
+    // re-verify repeatedly during the day.
+    await redis.set(`otp:booking:verified:${normalized}`, "1", "EX", 24 * 60 * 60);
     return { message: "Email verified" };
   },
 };
