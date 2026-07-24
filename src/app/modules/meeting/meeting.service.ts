@@ -285,13 +285,25 @@ const getMeeting = async (id: string): Promise<IMeeting> => {
 };
 
 const updateStatus = async (id: string, status: MeetingStatus): Promise<IMeeting> => {
-  const doc = await Meeting.findOneAndUpdate(
-    { _id: id, is_deleted: false },
-    { status },
-    { new: true }
-  ).lean<IMeeting>();
+  const doc = await Meeting.findOne({ _id: id, is_deleted: false });
   if (!doc) throw new AppError(StatusCodes.NOT_FOUND, "Meeting not found.");
-  return doc;
+
+  const prev = doc.status;
+  // Marking "completed" manually triggers the follow-up (and blocks the auto one).
+  const shouldFollowup = status === "completed" && prev !== "completed" && !doc.followupSent;
+  doc.status = status;
+  if (shouldFollowup) doc.followupSent = true;
+  await doc.save();
+  const obj = doc.toObject();
+
+  if (status === "cancelled" && prev !== "cancelled") {
+    void sendCancellationEmails(obj); // notify booker + host, free the slot
+  }
+  if (shouldFollowup) {
+    const settings = await getSettingsDoc();
+    void sendFollowupEmail(obj, settings.followupMessage || "Thank you for meeting with us!");
+  }
+  return obj;
 };
 
 const deleteMeeting = async (id: string): Promise<IMeeting> => {
