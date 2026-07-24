@@ -44,6 +44,13 @@ router.patch(
   validateRequest(MeetingValidation.note),
   MeetingControllers.updateNote
 );
+router.post(
+  "/:id/followup",
+  auth(),
+  checkPermission("Meetings", "update"),
+  validateRequest(MeetingValidation.followup),
+  MeetingControllers.sendFollowup
+);
 router.delete(
   "/:id",
   auth(),

@@ -488,4 +488,16 @@ export const MeetingServices = {
   cancelByToken,
   rescheduleByToken,
   sendDueReminders,
+  sendFollowup: async (id: string, messageHtml: string) => {
+    const m = await Meeting.findById(id);
+    if (!m) throw new AppError(StatusCodes.NOT_FOUND, "Meeting not found");
+    try {
+      await sendFollowupEmail(m.toObject(), messageHtml);
+      m.followupSent = true;
+      await m.save();
+    } catch (err) {
+      throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, "Failed to send follow-up email");
+    }
+    return m.toObject();
+  },
 };

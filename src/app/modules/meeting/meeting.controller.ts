@@ -114,6 +114,16 @@ const updateNote = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const sendFollowup = catchAsync(async (req: Request, res: Response) => {
+  const result = await MeetingServices.sendFollowup(req.params.id, req.body.messageHtml);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Follow-up email sent successfully",
+    data: result,
+  });
+});
+
 const deleteMeeting = catchAsync(async (req: Request, res: Response) => {
   const result = await MeetingServices.deleteMeeting(req.params.id);
   sendResponse(res, {
@@ -135,4 +145,5 @@ export const MeetingControllers = {
   updateStatus,
   updateNote,
   deleteMeeting,
+  sendFollowup,
 };

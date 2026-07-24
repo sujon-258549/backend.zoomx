@@ -37,4 +37,10 @@ const note = z.object({
   }),
 });
 
-export const MeetingValidation = { book, reschedule, updateStatus, note };
+const followup = z.object({
+  body: z.object({
+    messageHtml: z.string().min(1, "Message is required"),
+  }),
+});
+
+export const MeetingValidation = { book, reschedule, updateStatus, note, followup };
