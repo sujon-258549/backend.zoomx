@@ -8,6 +8,18 @@ import {
 } from "./meetingSetting.interface";
 import { MeetingSetting } from "./meetingSetting.model";
 
+/** Human-readable weekday names for error messages (0 = Sunday … 6 = Saturday). */
+const WEEKDAY_NAMES = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+const dayName = (day: number): string => WEEKDAY_NAMES[day] ?? `Day ${day}`;
+
 /** Mon–Fri 09:00–17:00 enabled, weekend off — sane Calendly-style default. */
 const defaultAvailability = (): IAvailabilityDay[] =>
   Array.from({ length: 7 }, (_, day) => ({
@@ -58,12 +70,15 @@ const normaliseDay = (input: Partial<IAvailabilityDay>, day: number): IAvailabil
     const start = parseHHmm(w.start);
     const end = parseHHmm(w.end);
     if (start === null || end === null) {
-      throw new AppError(StatusCodes.BAD_REQUEST, `Invalid time on ${w.start}-${w.end}.`);
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        `${dayName(day)}: "${w.start}–${w.end}" is not a valid time. Use 24-hour HH:mm format (e.g. 09:00).`
+      );
     }
     if (end <= start) {
       throw new AppError(
         StatusCodes.BAD_REQUEST,
-        `Window end (${w.end}) must be after start (${w.start}).`
+        `${dayName(day)}: the end time (${w.end}) must be later than the start time (${w.start}).`
       );
     }
     const key = `${w.start}-${w.end}`;
@@ -79,7 +94,7 @@ const normaliseDay = (input: Partial<IAvailabilityDay>, day: number): IAvailabil
     if ((parseHHmm(sorted[i].start) as number) < (parseHHmm(sorted[i - 1].end) as number)) {
       throw new AppError(
         StatusCodes.BAD_REQUEST,
-        `Overlapping availability windows on weekday ${day}.`
+        `${dayName(day)}: two time windows overlap (${sorted[i - 1].start}–${sorted[i - 1].end} and ${sorted[i].start}–${sorted[i].end}). Please keep them separate, without overlapping times.`
       );
     }
   }
