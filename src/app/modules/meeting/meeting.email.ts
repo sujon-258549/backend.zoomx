@@ -76,6 +76,12 @@ const row = (label: string, value: string): string =>
   `<tr><td style="padding:6px 0;color:#8a80a0;width:120px;vertical-align:top;">${label}</td>
    <td style="padding:6px 0;font-weight:600;">${value}</td></tr>`;
 
+/** A full-width block of admin-authored rich-text (HTML) inside the email table. */
+const messageRow = (html?: string): string =>
+  html
+    ? `<tr><td colspan="2" style="padding:2px 0 14px;font-size:15px;line-height:1.6;">${html}</td></tr>`
+    : "";
+
 /**
  * Fire-and-forget: email the booker a confirmation (with .ics) and notify the
  * host. Never throws — a mail failure must not fail the booking itself.
@@ -147,8 +153,9 @@ export const sendBookingEmails = async (m: IMeeting, title: string): Promise<voi
   }
 };
 
-/** Notify both parties that a booking was cancelled. */
-export const sendCancellationEmails = async (m: IMeeting): Promise<void> => {
+/** Notify both parties that a booking was cancelled. `messageHtml` is the
+ *  admin-configured rich-text cancellation message. */
+export const sendCancellationEmails = async (m: IMeeting, messageHtml = ""): Promise<void> => {
   if (!config.sender_email) return;
   const bookerWhen = formatInZone(m.startTime, m.bookerTimezone);
   const hostWhen = formatInZone(m.startTime, m.hostTimezone);
@@ -163,8 +170,8 @@ export const sendCancellationEmails = async (m: IMeeting): Promise<void> => {
       m.email,
       shell(
         "Your meeting was cancelled",
-        row("When", `${bookerWhen} (${m.bookerTimezone})`) + reasonRow,
-        `This booking has been cancelled. ${rebook} whenever you're ready.`,
+        messageRow(messageHtml) + row("When", `${bookerWhen} (${m.bookerTimezone})`) + reasonRow,
+        `${rebook} whenever you're ready.`,
       ),
       `Cancelled — ${bookerWhen}`,
       undefined,
