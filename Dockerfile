@@ -16,6 +16,6 @@ RUN npm ci --omit=dev
 COPY --from=build /application/dist ./dist
 COPY --from=build /application/src/templates ./src/templates
 
-EXPOSE 5000
+EXPOSE 5005
 
 CMD ["node", "dist/server.js"]

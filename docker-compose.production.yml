@@ -49,9 +49,25 @@ services:
     depends_on:
       - mongo
       - redis
-    ports:
-      - "5005:5005"
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=dokploy-network
+      - traefik.http.routers.zoomx-prod-web.rule=Host(`api.gubdi.com`)
+      - traefik.http.routers.zoomx-prod-web.entrypoints=web
+      - traefik.http.routers.zoomx-prod-web.middlewares=redirect-to-https@file
+      - traefik.http.routers.zoomx-prod-websecure.rule=Host(`api.gubdi.com`)
+      - traefik.http.routers.zoomx-prod-websecure.entrypoints=websecure
+      - traefik.http.services.zoomx-prod-websecure.loadbalancer.server.port=5005
+      - traefik.http.routers.zoomx-prod-websecure.service=zoomx-prod-websecure
+      - traefik.http.routers.zoomx-prod-websecure.tls.certresolver=letsencrypt
+    networks:
+      - dokploy-network
+      - default
 
 volumes:
   mongo_data:
   redis_data:
+
+networks:
+  dokploy-network:
+    external: true
