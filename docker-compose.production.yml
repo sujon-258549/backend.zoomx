@@ -21,7 +21,7 @@ services:
     restart: unless-stopped
     environment:
       NODE_ENV: production
-      PORT: 5005
+      PORT: 6001
       SERVER_URL: ${SERVER_URL}
       DB_URL: mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@mongo:27017/zoomx_digital?authSource=admin
       CORS_ORIGIN: ${CORS_ORIGIN}
@@ -49,17 +49,8 @@ services:
     depends_on:
       - mongo
       - redis
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=dokploy-network
-      - traefik.http.routers.zoomx-prod-web.rule=Host(`api.gubdi.com`)
-      - traefik.http.routers.zoomx-prod-web.entrypoints=web
-      - traefik.http.routers.zoomx-prod-web.middlewares=redirect-to-https@file
-      - traefik.http.routers.zoomx-prod-websecure.rule=Host(`api.gubdi.com`)
-      - traefik.http.routers.zoomx-prod-websecure.entrypoints=websecure
-      - traefik.http.services.zoomx-prod-websecure.loadbalancer.server.port=5005
-      - traefik.http.routers.zoomx-prod-websecure.service=zoomx-prod-websecure
-      - traefik.http.routers.zoomx-prod-websecure.tls.certresolver=letsencrypt
+    ports:
+      - "6001:6001"
     networks:
       - dokploy-network
       - default

@@ -21,7 +21,7 @@ services:
     restart: unless-stopped
     environment:
       NODE_ENV: staging
-      PORT: 5006
+      PORT: 6002
       SERVER_URL: ${SERVER_URL}
       DB_URL: mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@mongo:27017/zoomx_digital_staging?authSource=admin
       CORS_ORIGIN: ${CORS_ORIGIN}
@@ -49,17 +49,8 @@ services:
     depends_on:
       - mongo
       - redis
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=dokploy-network
-      - traefik.http.routers.zoomx-dev-web.rule=Host(`devapi.gubdi.com`)
-      - traefik.http.routers.zoomx-dev-web.entrypoints=web
-      - traefik.http.routers.zoomx-dev-web.middlewares=redirect-to-https@file
-      - traefik.http.routers.zoomx-dev-websecure.rule=Host(`devapi.gubdi.com`)
-      - traefik.http.routers.zoomx-dev-websecure.entrypoints=websecure
-      - traefik.http.services.zoomx-dev-websecure.loadbalancer.server.port=5006
-      - traefik.http.routers.zoomx-dev-websecure.service=zoomx-dev-websecure
-      - traefik.http.routers.zoomx-dev-websecure.tls.certresolver=letsencrypt
+    ports:
+      - "5006:5006"
     networks:
       - dokploy-network
       - default
