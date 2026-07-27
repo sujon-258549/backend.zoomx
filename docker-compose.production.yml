@@ -21,7 +21,7 @@ services:
     restart: unless-stopped
     environment:
       NODE_ENV: production
-      PORT: 5005
+      PORT: 6001
       SERVER_URL: ${SERVER_URL}
       DB_URL: mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@mongo:27017/zoomx_digital?authSource=admin
       CORS_ORIGIN: ${CORS_ORIGIN}
@@ -50,8 +50,15 @@ services:
       - mongo
       - redis
     ports:
-      - "5005:5005"
+      - "6001:6001"
+    networks:
+      - dokploy-network
+      - default
 
 volumes:
   mongo_data:
   redis_data:
+
+networks:
+  dokploy-network:
+    external: true
