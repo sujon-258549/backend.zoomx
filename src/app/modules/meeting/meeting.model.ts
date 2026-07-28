@@ -8,7 +8,9 @@ const meetingSchema = new Schema<IMeeting>(
     phone: { type: String, trim: true },
     notes: { type: String, trim: true },
 
-    startTime: { type: Date, required: true, index: true },
+    // Indexed via the partial-unique schema.index() below (no `index: true`
+    // here — that would create a duplicate index).
+    startTime: { type: Date, required: true },
     endTime: { type: Date, required: true },
     durationMinutes: { type: Number, required: true },
 
